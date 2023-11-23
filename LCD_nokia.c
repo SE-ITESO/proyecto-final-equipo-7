@@ -8,6 +8,11 @@
 #include "MEM.h"
 #include "CONFIG.h"
 #include "LCD_nokia_images.h"
+#include "UART.h"
+
+#include "I2C.h"
+#include "MANAGER.h"
+
 
 extern const uint8_t graphic[IMAGE_SIZE];//prueba
 extern const uint8_t ITESO[IMAGE_SIZE];
@@ -292,3 +297,79 @@ void LCD_nokia_delay(void)
 
 	}
 }
+
+
+
+//Para mandar fecha a display
+//para mandar a  display
+void LCD_nokia_show_date() {
+    uint8_t formattedDate[6];
+
+    uint8_t* uart_rx_date = UART_get_rx_date();
+    	uint8_t* i2c_rx_date = I2C_get_rx_date();
+
+    	uint16_t year =  i2c_rx_date[I2C_YEAR_INDEX];
+    	    uint8_t month = i2c_rx_date[I2C_MONTH_INDEX];
+    	    uint8_t day = i2c_rx_date[I2C_DAY_INDEX];
+
+    formattedDate[0] = (day >> 4) & UNITS_MASK;       // Tens of Day
+    formattedDate[1] = day & UNITS_MASK;              // Units of Day
+    formattedDate[2] = (month >> 4) & UNITS_MASK;     // Tens of Month
+    formattedDate[3] = month & UNITS_MASK;            // Units of Month
+    formattedDate[4] = (year >> 4) & UNITS_MASK;      // Tens of Year
+    formattedDate[5] = year & UNITS_MASK;             // Units of Year
+
+    LCD_nokia_clear();
+    LCD_nokia_goto_xy(2, 0);
+    LCD_nokia_send_char(formattedDate[0] + '0');
+    LCD_nokia_send_char(formattedDate[1] + '0');
+    LCD_nokia_send_char('/');
+    LCD_nokia_send_char(formattedDate[2] + '0');
+    LCD_nokia_send_char(formattedDate[3] + '0');
+    LCD_nokia_send_char('/');
+    LCD_nokia_send_char('2');
+    LCD_nokia_send_char('0');
+    LCD_nokia_send_char(formattedDate[4] + '0');
+    LCD_nokia_send_char(formattedDate[5] + '0');
+}
+
+
+void LCD_nokia_show_time() {
+    uint8_t formattedTime[6];
+
+      uint8_t* i2c_rx_time = I2C_get_rx_time();
+
+            uint8_t seconds = i2c_rx_time[I2C_SECONDS_INDEX];
+             uint8_t minutes = i2c_rx_time[I2C_MINUTES_INDEX];
+             uint8_t hours = i2c_rx_time[I2C_HOURS_INDEX];
+
+
+    formattedTime[0] = ((hours >> 4) & UNITS_MASK);       // Tens of Hours
+    formattedTime[1] = hours & UNITS_MASK;                // Units of Hours
+    formattedTime[2] = ((minutes >> 4) & UNITS_MASK);     // Tens of Minutes
+    formattedTime[3] = minutes & UNITS_MASK;              // Units of Minutes
+    formattedTime[4] = ((seconds >> 4) & UNITS_MASK);     // Tens of Seconds
+    formattedTime[5] = seconds & UNITS_MASK;              // Units of Seconds
+
+
+    LCD_nokia_goto_xy(2, 1);
+    LCD_nokia_send_char(formattedTime[0] + '0');
+    LCD_nokia_send_char(formattedTime[1] + '0');
+    LCD_nokia_send_char(':');
+    LCD_nokia_send_char(formattedTime[2] + '0');
+    LCD_nokia_send_char(formattedTime[3] + '0');
+    LCD_nokia_send_char(':');
+    LCD_nokia_send_char(formattedTime[4] + '0');
+    LCD_nokia_send_char(formattedTime[5] + '0');
+}
+
+
+void LCD_nokia_show_data(){
+
+	LCD_nokia_show_date();
+		LCD_nokia_show_time() ;
+
+
+
+}
+

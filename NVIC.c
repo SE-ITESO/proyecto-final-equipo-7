@@ -12,7 +12,7 @@
 
 #include "NVIC.h"
 
-void NVIC_enable_interrupt_and_priotity(interrupt_t interrupt_number, priority_level_t priority)
+void NVIC_enable_interrupt_and_priority(interrupt_t interrupt_number, priority_level_t priority)
 {
 	/**This functions are part of CMSIS Core functions*/
 	/**It enables the IRQ*/

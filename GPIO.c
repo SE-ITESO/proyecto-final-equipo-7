@@ -163,7 +163,7 @@ void GPIO_callback_init(GPIO_Name_t gpio, void (*handler)(uint32_t flags))
 			break;
 	}
 }
-
+/*
 void PORTA_IRQHandler(void)
 {
 	g_intr_status_flag.flag_port_a = TRUE;
@@ -255,6 +255,7 @@ void PORTD_IRQHandler(void)
 
 
 }
+*/
 
 void GPIO_port_irq_clr(GPIO_t *gpio)
 {

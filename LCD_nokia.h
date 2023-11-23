@@ -28,6 +28,7 @@ void LCD_nokia_show_sequence_playing();
 void LCD_nokia_show_sequence_stopped();
 void LCD_nokia_show_manual();
 void LCD_nokia_show_current();
-
+void LCD_nokia_show_time();
+void LCD_nokia_show_date();
 
 #endif /* LCD_NOKIA_H_ */

@@ -8,6 +8,8 @@
 #ifndef CONFIG_H_
 #define CONFIG_H_
 
+#include "stdint.h"
+
 #define COLON_POSITION1				1
 #define COLON_POSITION2 			3
 #define SLASH_POSITION1 			1
@@ -32,20 +34,15 @@ typedef enum {
 	GPIOE_name
 }GPIO_Name_t;
 
-typedef enum {
-    SOUND_CYNBAL_PIN,
-    SOUND_BONGO_PIN,
-	BUTTON_MENU_PIN=1u,
-	BUTTON_B1_PIN=4u,
-	BUTTON_B2_PIN,
-    SOUND_HITHAT_PIN=8u,
-    SOUND_RIMSHOT_PIN,
-	SOUND_TAMBOR_PIN = 9u,
-	SOUND_COWBELL_PIN = 16u,
-	SOUND_SNARE_PIN = 18u,
-	SOUND_KICK_PIN,
-	SOUND_GUIRO_PIN = 23u
-}BUTTONS_Pin_t;
+typedef struct {
+    uint8_t flag;
+    uint32_t time;
+    uint8_t caps;
+    uint32_t time_count;
+    uint8_t caps_count;
+} LOG_Data_t;
+
+
 
 typedef enum {
 	 TRANSFER_SIZE = 8U,
@@ -58,20 +55,6 @@ typedef enum {
 
 
 
-typedef enum {
-    SOUND_CYNBAL_MASK = (1u << SOUND_CYNBAL_PIN),
-    SOUND_BONGO_MASK = (1u << SOUND_BONGO_PIN),
-    BUTTON_MENU_MASK = (1u << BUTTON_MENU_PIN),
-    BUTTON_B1_MASK = (1u << BUTTON_B1_PIN),
-    BUTTON_B2_MASK = (1u << BUTTON_B2_PIN),
-    SOUND_HITHAT_MASK = (1u << SOUND_HITHAT_PIN),
-    SOUND_RIMSHOT_MASK = (1u << SOUND_RIMSHOT_PIN),
-    SOUND_TAMBOR_MASK = (1u << SOUND_TAMBOR_PIN),
-    SOUND_COWBELL_MASK = (1u << SOUND_COWBELL_PIN),
-    SOUND_SNARE_MASK = (1u << SOUND_SNARE_PIN),
-    SOUND_KICK_MASK = (1u << SOUND_KICK_PIN),
-    SOUND_GUIRO_MASK = (1u << SOUND_GUIRO_PIN)
-}BUTTONS_Mask_t;
 
 
 typedef enum {
@@ -228,6 +211,22 @@ typedef enum {
 	DHT_COMMAND_5 = 0x33
 }I2C_Commands_t;
 
+typedef struct {
+    uint8_t options : 1;  // Bit 0
+    uint8_t config : 1;   // Bit 1
+    uint8_t set_time : 1; // Bit 2
+    uint8_t set_date : 1; // Bit 3
+    uint8_t log : 1;      // Bit 4
+    uint8_t set_log : 1;
+    uint8_t read_log : 1;
+    uint8_t read_time : 1;
+    uint8_t read_date : 1;
+    uint8_t read_hum : 1;
+    uint8_t read_temp : 1;
+    uint8_t time : 1;
+    uint8_t date : 1;
+} UART_Flags_t;
+
 typedef enum {
     UART0_num,
 	UART1_num,
@@ -235,6 +234,12 @@ typedef enum {
 	UART3_num,
 	UART4_num
 }UART_Num_t;
+
+typedef struct{
+	uint8_t flag; /** Flag to indicate that there is new data*/
+	uint16_t mail_box; /** it contains the received data*/
+} uart_mail_box_t;
+
 
 
 typedef enum {

@@ -12,7 +12,7 @@
 void INA219_config(void) {
     // Configuración específica del INA219
     // Puedes ajustar estos valores según las necesidades de tu aplicación
-    uint16_t config = 0x019u; // Ver hoja de datos del INA219 para los bits de configuración
+    uint16_t config = 0x079u; // Ver hoja de datos del INA219 para los bits de configuración
 
     // Envía la configuración al INA219
     uint8_t configBytes[2];

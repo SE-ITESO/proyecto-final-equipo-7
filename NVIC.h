@@ -113,7 +113,7 @@ typedef enum {
  	 \param[in] priority establishes the priority of the IRQ
  	 \return void
  */
-void NVIC_enable_interrupt_and_priotity(interrupt_t interrupt_number, priority_level_t priority);
+void NVIC_enable_interrupt_and_priority(interrupt_t interrupt_number, priority_level_t priority);
 /********************************************************************************************/
 /********************************************************************************************/
 /********************************************************************************************/

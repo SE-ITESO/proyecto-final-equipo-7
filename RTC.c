@@ -57,7 +57,7 @@ void RTC_config()
     CLOCK_EnableClock(kCLOCK_PortB);
     PORT_SetPinMux(PORTB, PIN2, kPORT_MuxAlt2);
     PORT_SetPinMux(PORTB, PIN3, kPORT_MuxAlt2);
-    CLOCK_EnableClock(kCLOCK_PortD);
+    CLOCK_EnableClock(kCLOCK_PortE);
     port_pin_config_t config = {
         kPORT_PullUp,
         kPORT_SlowSlewRate,
@@ -72,9 +72,9 @@ void RTC_config()
         0,
     };
 
-    PORT_SetPinConfig(PORTD, PIN0, &config);
-    GPIO_PinInit(GPIOD, PIN0, &interrupt_config);
-    PORT_SetPinInterruptConfig(PORTD, PIN0, kPORT_InterruptRisingEdge);
+    PORT_SetPinConfig(PORTE, PIN24, &config);
+    GPIO_PinInit(GPIOE, PIN24, &interrupt_config);
+    PORT_SetPinInterruptConfig(PORTE, PIN24, kPORT_InterruptRisingEdge);
 
     BOARD_InitBootClocks();
     BOARD_InitDebugConsole();

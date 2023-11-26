@@ -62,7 +62,9 @@ void GPIO_pin_set_interrupt_fe(const char *port, uint32_t pin); //sets ISF flag 
 void GPIO_port_isf_clr(const char *port, uint32_t pin);  //clears Interrupt Status Flag
 void GPIO_port_irq_clr(GPIO_t *gpio); 		//clears interruption request flags
 uint8_t GPIO_port_irq_get(GPIO_t *gpio, uint32_t pin);	//gets interruption request flag info
+void GPIOC_callback_init();
 void GPIOD_callback_init();
+void GPIOE_callback_init();
 
 typedef struct
 {

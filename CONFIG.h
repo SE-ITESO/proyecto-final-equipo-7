@@ -23,6 +23,15 @@ typedef enum {
 	UART_BAUDRATE = 115200U
 }BAUDRATE_Value_t;
 
+
+typedef enum{FALSE, TRUE} boolean_t;
+
+typedef enum {
+    PIT_CHANNEL_0,
+	PIT_CHANNEL_1,
+	PIT_CHANNEL_2
+}PIT_Channels_t;
+
 typedef enum {
 	TENS_MASK = 0xF0,
 	UNITS_MASK = 0x0F,
@@ -157,10 +166,12 @@ typedef enum {
 	PIN1,
 	PIN2,
 	PIN3,
+	PIN10=10,
 	PIN14=14,
 	PIN15,
 	PIN16,
-	PIN17
+	PIN17,
+	PIN24=24
 }Pin_t;
 
 typedef enum {

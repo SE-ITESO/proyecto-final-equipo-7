@@ -26,8 +26,28 @@ volatile static uint32_t g_intr_register_dec_pin = 0;
 
 volatile static uint32_t g_intr_register_pin = 0;
 
-
+static void (*GPIOC_callback)(uint32_t flags) = 0;
 static void (*GPIOD_callback)(uint32_t flags) = 0;
+static void (*GPIOE_callback)(uint32_t flags) = 0;
+
+void GPIOC_callback_init( void (*handler)(uint32_t flags))
+{
+	GPIOC_callback = handler;
+
+}
+
+void PORTC_IRQHandler(void)
+{
+	uint32_t irq_status = 0;
+	irq_status = GPIO_PortGetInterruptFlags(GPIOC);
+
+	if (GPIOC_callback)
+	{
+		GPIOC_callback(irq_status);
+	}
+
+	GPIO_port_isf_clr("C", 11);
+}
 
 void GPIOD_callback_init( void (*handler)(uint32_t flags))
 {
@@ -45,7 +65,26 @@ void PORTD_IRQHandler(void)
 		GPIOD_callback(irq_status);
 	}
 
-	GPIO_port_isf_clr("D", 0);
+	GPIO_port_isf_clr("D", 3);
+}
+
+void GPIOE_callback_init( void (*handler)(uint32_t flags))
+{
+	GPIOE_callback = handler;
+
+}
+
+void PORTE_IRQHandler(void)
+{
+	uint32_t irq_status = 0;
+	irq_status = GPIO_PortGetInterruptFlags(GPIOE);
+
+	if (GPIOE_callback)
+	{
+		GPIOE_callback(irq_status);
+	}
+
+	GPIO_port_isf_clr("E", 24);
 }
 
 
@@ -175,8 +214,6 @@ void GPIO_pin_tog(GPIO_t *gpio, uint32_t pin)
 {
     gpio->PTOR = (1u << pin);
 }
-
-
 
 void GPIO_pin_pe(const char *port, uint32_t pin)
 {

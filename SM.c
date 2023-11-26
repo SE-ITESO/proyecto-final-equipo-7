@@ -94,7 +94,7 @@ void SM_state_machine()
 			TERMINAL1_flags.read_log = false;
 			TERMINAL1_flags.read_time = false;
 			TERMINAL1_flags.read_date = false;
-			TERMINAL2_flags.read_curr = false;
+			TERMINAL1_flags.read_curr = false;
 			TERMINAL1_flags.time = false;
 			TERMINAL1_flags.date = false;
 			time1_input_position = 0;
@@ -139,7 +139,7 @@ void SM_state_machine()
 				{
 					case SET_TIME:
 
-						if(TERMINAL1_flags.time == true){
+						if(TERMINAL2_flags.time == true){
 							TERMINAL_msg_busy(TERMINAL_1);
 						}else
 						{
@@ -148,6 +148,7 @@ void SM_state_machine()
 							TERMINAL1_flags.time = true;
 							TERMINAL1_flags.config = false;
 						}
+						break;
 
 					case SET_DATE:
 						if(TERMINAL2_flags.date == true){
@@ -163,7 +164,7 @@ void SM_state_machine()
 						break;
 
 					case READ_TIME:
-						if(TERMINAL1_flags.time == true){
+						if(TERMINAL2_flags.time == true){
 							TERMINAL_msg_busy(TERMINAL_1);
 						}else
 						{
@@ -247,7 +248,7 @@ void SM_state_machine()
 					if((ENTER_KEY == TERMINAL1_input) && (time1_input_position == TIME_FORMAT_LENGTH))
 					{
 						MANAGER_TERMINAL_to_RTC_time();
-						RTC_write_date();
+						RTC_write_time();
 						TERMINAL_msg_set_time(TERMINAL_1);
 					}
 					else if (time1_input_position < TIME_FORMAT_LENGTH)
@@ -259,7 +260,7 @@ void SM_state_machine()
 							UART_WriteByte(TERMINAL_1, COLON);
 						}
 
-						RTC_get_time()[time1_input_position] = TERMINAL1_input;
+						TERMINAL_get_time()[time1_input_position] = TERMINAL1_input;
 						time1_input_position++;
 					}
 
@@ -281,7 +282,7 @@ void SM_state_machine()
 								||(date1_input_position==SLASH_POSITION2)){
 							UART_WriteByte(TERMINAL_1, SLASH);
 						}
-						RTC_get_date()[date1_input_position] = TERMINAL1_input;
+						TERMINAL_get_date()[date1_input_position] = TERMINAL1_input;
 						date1_input_position++;
 					}
 
@@ -448,6 +449,7 @@ void SM_state_machine()
 							TERMINAL2_flags.time = true;
 							TERMINAL2_flags.config = false;
 						}
+						break;
 
 					case SET_DATE:
 						if(TERMINAL2_flags.date == true){
@@ -559,7 +561,7 @@ void SM_state_machine()
 							UART_WriteByte(TERMINAL_2, COLON);
 						}
 
-						RTC_get_time()[time2_input_position] = TERMINAL2_input;
+						TERMINAL_get_time()[time2_input_position] = TERMINAL2_input;
 						time2_input_position++;
 					}
 
@@ -581,7 +583,7 @@ void SM_state_machine()
 								||(date2_input_position==SLASH_POSITION2)){
 							UART_WriteByte(TERMINAL_2, SLASH);
 						}
-						RTC_get_date()[date2_input_position] = TERMINAL2_input;
+						TERMINAL_get_date()[date2_input_position] = TERMINAL2_input;
 						date2_input_position++;
 					}
 

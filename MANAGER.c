@@ -107,14 +107,14 @@ void MANAGER_update_seconds_terminal()
 	if((g_handler_terminal1_flag)&&(g_handler_flag)){
 		MANAGER_RTC_to_TERMINAL_time();
 		TERMINAL_update_time();
-		TERMINAL_change_seconds(UART0);
+		TERMINAL_change_seconds(TERMINAL_1);
 	}
 
 	else if((g_handler_terminal2_flag)&&(g_handler_flag)){
 		RTC_read_time();
 		MANAGER_RTC_to_TERMINAL_time();
 		TERMINAL_update_time();
-		TERMINAL_change_seconds(UART4);
+		TERMINAL_change_seconds(TERMINAL_2);
 	}
 }
 void MANAGER_update_seconds_terminal1_flag(){
@@ -196,10 +196,10 @@ void MANAGER_handler_log()
 {
 	if(g_handler_flag){
 
-		MANAGER_update_seconds_terminal();
 		g_handler_flag=0;
 		RTC_read_time();
 		RTC_read_date();
+		MANAGER_update_seconds_terminal();
 
 		if(dataLog1.flag){
 			if(dataLog1.time == dataLog1.time_count){

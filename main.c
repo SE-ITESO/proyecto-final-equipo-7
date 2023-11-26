@@ -18,6 +18,8 @@
 #include "fsl_uart.h"
 #include "NVIC.h"
 #include "GPIO.h"
+#include "fsl_gpio.h"
+#include "fsl_port.h"
 #include "UART.h"
 #include "I2C.h"
 #include "TERMINAL.h"
@@ -28,17 +30,31 @@
 #include "RTC.h"
 #include "INA219.h"
 #include "CONFIG.h"
+#include "MOTOR.h"
+#include "PIT.h"
 
+void delay(uint32_t delay)
+{
+	volatile int counter, counter_2;
+
+		for(counter_2 = 16; counter_2 > 0; counter_2--)
+		{
+			for(counter = delay; counter > 0; counter--);
+
+		}
+}
 
 int main(void)
 {
 
 	FTM_init();
-	PWM_config();
+	MOTOR_config();
+	PIT_init();
 	I2C_init();
-	UART_init();
 	RTC_config();
+	UART_init();
 	INA219_config();
+	SM_init_flags();
 
 	TERMINAL_show_options(UART0);
 	TERMINAL_show_options(UART4);
@@ -49,15 +65,27 @@ int main(void)
     NVIC_set_basepri_threshold(PRIORITY_7);
     NVIC_enable_interrupt_and_priority(UART0_IRQ, PRIORITY_2);
     NVIC_enable_interrupt_and_priority(UART4_IRQ, PRIORITY_2);
-    NVIC_enable_interrupt_and_priority(PORTD_IRQ, PRIORITY_5);
+    NVIC_enable_interrupt_and_priority(PORTE_IRQ, PRIORITY_5);
     NVIC_global_enable_interrupts;
 
-	GPIOD_callback_init(MANAGER_handler_flag);
+	GPIOE_callback_init(MANAGER_handler_flag);
+
+    NVIC_set_basepri_threshold(PRIORITY_7);
+    NVIC_enable_interrupt_and_priority(PIT_CH0_IRQ,PRIORITY_1);
+    NVIC_enable_interrupt_and_priority(PORTC_IRQ, PRIORITY_5);
+    NVIC_global_enable_interrupts;
+    GPIOC_callback_init(MOTOR_encoder_channelA);
+
+    PIT_timer_period(PIT_CHANNEL_0, 10000);
+    PIT_callback_init(PIT_CHANNEL_0, MOTOR_PID_flag);
+    PIT_start(PIT_CHANNEL_0);
 
     while (1)
     {
     	MANAGER_handler_log();
     	SM_state_machine();
+    	MOTOR_position();
+		MOTOR_PID(RAD_CONVERSION);
     }
 }
 

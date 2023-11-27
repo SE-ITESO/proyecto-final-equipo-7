@@ -26,8 +26,10 @@
 #include "MANAGER.h"
 #include "CONFIG.h"
 
+#include "GPIO.h"
 
 
+#include "fsl_port.h"
 
 
 
@@ -39,29 +41,35 @@ int main(void) {
 
 
 
-    SPI_config();
+   // SPI_config();
     I2C_init();
     INA219_config();
+   INA219_calibration_reg();
+    /*
     LCD_nokia_init();
 	I2C_rtc_squarewave();
 	UART_init();
 	UART_show_options(UART0);
-
+*/
 
     /* Enable RX interrupt. */
-    UART_EnableInterrupts(UART0, kUART_RxDataRegFullInterruptEnable | kUART_RxOverrunInterruptEnable);
+    /*
+   UART_EnableInterrupts(UART0, kUART_RxDataRegFullInterruptEnable | kUART_RxOverrunInterruptEnable);
 
 
     NVIC_set_basepri_threshold(PRIORITY_7);
     NVIC_enable_interrupt_and_priority(UART0_IRQ, PRIORITY_2);
 
-    //NVIC_enable_interrupt_and_priority(PORTD_IRQ, PRIORITY_5);
+   NVIC_enable_interrupt_and_priority(PORTD_IRQ, PRIORITY_5);
+
+     NVIC_enable_interrupt_and_priority(PORTE_IRQ, PRIORITY_5);
 
     NVIC_global_enable_interrupts;
 
+
     uint8_t* uart_rx_time = UART_get_rx_time();
     	uint8_t* uart_rx_date = UART_get_rx_date();
-
+    	*/
     	UART_Flags_t UART0_flags;
     	UART0_flags.options = true;
     	UART0_flags.config = false;
@@ -96,10 +104,21 @@ int main(void) {
         uint8_t log_yes = 0;
         uint8_t log_no = 0;
 
+        GPIOE_callback_init(MANAGER_handler_flag);
+    //    INA219_config();
 
+        float value=0;
 
     while (1) {
+
+
     	MANAGER_handler_log();
+    	READ_Current();
+    	READ_shunt() ;//
+
+    //	float current = READ_Register(0x04); // Assuming 0x04 is the register address for current
+
+    //	MANAGER_data_update_seconds_lcd();///////////////
     	//MANAGER_UART();
     	if(UART_get_mail_flag(UART0_num))
     	    			{
@@ -203,7 +222,9 @@ int main(void) {
     	    										MANAGER_update_seconds_uart0_flag();
     	    										MANAGER_I2C_to_UART_time();
     	    										UART_update_time(UART0);
-    	    										LCD_nokia_show_time();///prueba
+    	    									//	LCD_nokia_show_time();///prueba
+    	    										//LCD_nokia_update_time();
+
     	    										UART_show_time(UART0);
     	    										UART0_flags.config = false;
     	    										UART0_flags.read_time = true;
@@ -285,7 +306,7 @@ int main(void) {
     	    									UART_WriteByte(UART0, COLON);
     	    								}
 
-    	    								uart_rx_time[time_input_position] = UART0_input;
+    	    							//	uart_rx_time[time_input_position] = UART0_input;
     	    								time_input_position++;
     	    							}
 
@@ -311,7 +332,7 @@ int main(void) {
     	    										||(date_input_position==SLASH_POSITION2)){
     	    									UART_WriteByte(UART0, SLASH);
     	    								}
-    	    								uart_rx_date[date_input_position] = UART0_input;
+    	    							//	uart_rx_date[date_input_position] = UART0_input;
     	    								date_input_position++;
     	    							}
 

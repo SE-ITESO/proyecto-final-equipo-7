@@ -91,15 +91,8 @@ boolean_t GPIO_get_rimshot_pressed();
 boolean_t GPIO_get_tambor_pressed();
 boolean_t GPIO_get_cynbal_pressed();
 boolean_t GPIO_get_cowbell_pressed();
-void GPIO_set_kick_pressed(boolean_t value);
-void GPIO_set_snare_pressed(boolean_t value);
-void GPIO_set_bongo_pressed(boolean_t value);
-void GPIO_set_hithat_pressed(boolean_t value);
-void GPIO_set_guiro_pressed(boolean_t value);
-void GPIO_set_rimshot_pressed(boolean_t value);
-void GPIO_set_tambor_pressed(boolean_t value);
-void GPIO_set_cynbal_pressed(boolean_t value);
-void GPIO_set_cowbell_pressed(boolean_t value);
+
+void GPIOE_callback_init();
 
 
 #endif /* GPIO_H_ */

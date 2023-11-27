@@ -20,6 +20,7 @@
 #include "CONFIG.h"
 #include "fsl_wdog.h"
 #include "stdbool.h"
+#include "LCD_nokia.h"
 
 uint8_t g_handler_flag=0;
 uint8_t g_handler_uart0_flag=0;
@@ -77,6 +78,67 @@ void MANAGER_I2C_to_UART_date(){
     uart_rx_date[UART_TENS_YEAR_INDEX] = (year >> 4) & UNITS_MASK;
     uart_rx_date[UART_UNITS_YEAR_INDEX] =year & UNITS_MASK;
 }
+//////////////////////////////////////////////////
+void MANAGER_I2C_to_LCD_nokia_date() {
+    uint8_t formattedDate[6];
+
+    uint8_t* uart_rx_date = UART_get_rx_date();
+    	uint8_t* i2c_rx_date = I2C_get_rx_date();
+
+    	uint16_t year =  i2c_rx_date[I2C_YEAR_INDEX];
+    	    uint8_t month = i2c_rx_date[I2C_MONTH_INDEX];
+    	    uint8_t day = i2c_rx_date[I2C_DAY_INDEX];
+
+    formattedDate[0] = (day >> 4) & UNITS_MASK;       // Tens of Day
+    formattedDate[1] = day & UNITS_MASK;              // Units of Day
+    formattedDate[2] = (month >> 4) & UNITS_MASK;     // Tens of Month
+    formattedDate[3] = month & UNITS_MASK;            // Units of Month
+    formattedDate[4] = (year >> 4) & UNITS_MASK;      // Tens of Year
+    formattedDate[5] = year & UNITS_MASK;             // Units of Year
+
+
+    LCD_nokia_goto_xy(2, 0);
+    LCD_nokia_send_char(formattedDate[0] + '0');
+    LCD_nokia_send_char(formattedDate[1] + '0');
+    LCD_nokia_send_char('/');
+    LCD_nokia_send_char(formattedDate[2] + '0');
+    LCD_nokia_send_char(formattedDate[3] + '0');
+    LCD_nokia_send_char('/');
+    LCD_nokia_send_char('2');
+    LCD_nokia_send_char('0');
+    LCD_nokia_send_char(formattedDate[4] + '0');
+    LCD_nokia_send_char(formattedDate[5] + '0');
+}
+
+
+void MANAGER_I2C_to_LCD_nokia_time(){
+	 uint8_t formattedTime[6];
+
+	      uint8_t* i2c_rx_time = I2C_get_rx_time();
+
+	            uint8_t seconds = i2c_rx_time[I2C_SECONDS_INDEX];
+	             uint8_t minutes = i2c_rx_time[I2C_MINUTES_INDEX];
+	             uint8_t hours = i2c_rx_time[I2C_HOURS_INDEX];
+
+
+	    formattedTime[0] = ((hours >> 4) & UNITS_MASK);       // Tens of Hours
+	    formattedTime[1] = hours & UNITS_MASK;                // Units of Hours
+	    formattedTime[2] = ((minutes >> 4) & UNITS_MASK);     // Tens of Minutes
+	    formattedTime[3] = minutes & UNITS_MASK;              // Units of Minutes
+	    formattedTime[4] = ((seconds >> 4) & UNITS_MASK);     // Tens of Seconds
+	    formattedTime[5] = seconds & UNITS_MASK;              // Units of Seconds
+
+
+	    LCD_nokia_goto_xy(2, 1);
+	    LCD_nokia_send_char(formattedTime[0] + '0');
+	    LCD_nokia_send_char(formattedTime[1] + '0');
+	    LCD_nokia_send_char(':');
+	    LCD_nokia_send_char(formattedTime[2] + '0');
+	    LCD_nokia_send_char(formattedTime[3] + '0');
+	    LCD_nokia_send_char(':');
+	    LCD_nokia_send_char(formattedTime[4] + '0');
+	    LCD_nokia_send_char(formattedTime[5] + '0');
+}
 
 
 
@@ -121,31 +183,6 @@ void MANAGER_I2C_to_UART_hum()
     uart_rx_hum[3] = digit4;
 }
 
-void MANAGER_I2C_to_UART_temp()
-{
-	uint8_t* uart_rx_temp = UART_get_rx_temp();
-	uint8_t* i2c_rx_temp = I2C_get_rx_temp();
-
-	uint64_t concatenatedValue = 0;
-
-	concatenatedValue |= (i2c_rx_temp[0] & 0x0F) << 16;
-	concatenatedValue |= i2c_rx_temp[1] << 8;
-	concatenatedValue |= i2c_rx_temp[2];
-
-	concatenatedValue = concatenatedValue * 20000;
-	concatenatedValue = concatenatedValue >> 20;
-	concatenatedValue = concatenatedValue -5000;
-
-    uint32_t digit4 = concatenatedValue % 10;
-    uint32_t digit3 = (concatenatedValue / 10) % 10;
-    uint32_t digit2 = (concatenatedValue / 100) % 10;
-    uint32_t digit1 = (concatenatedValue / 1000) % 10;
-
-    uart_rx_temp[0] = digit1;
-    uart_rx_temp[1] = digit2;
-    uart_rx_temp[2] = digit3;
-    uart_rx_temp[3] = digit4;
-}
 
 void MANAGER_update_seconds_uart()
 {
@@ -154,14 +191,26 @@ void MANAGER_update_seconds_uart()
 		UART_update_time();
 		UART_change_seconds(UART0);
 	}
-
-	else if((g_handler_uart4_flag)&&(g_handler_flag)){
-		I2C_read_rtc_time();
-		MANAGER_I2C_to_UART_time();
-		UART_update_time();
-		UART_change_seconds(UART4);
-	}
 }
+
+
+////////////////////////////////////
+void MANAGER_data_update_seconds_lcd()
+{
+	//if((g_handler_uart0_flag)&&(g_handler_flag)){
+		MANAGER_I2C_to_LCD_nokia_time();
+		MANAGER_I2C_to_LCD_nokia_date();
+		//LCD_nokia_goto_xy(2, 1);
+		//LCD_nokia_send_string('Corriente: ');
+
+
+
+		//UART_update_time();
+	//	UART_change_seconds(UART0);
+	//}
+}
+///////////////////////////////////////
+
 void MANAGER_update_seconds_uart0_flag(){
 	g_handler_uart0_flag=1;
 }
@@ -242,6 +291,7 @@ void MANAGER_handler_log()
 	if(g_handler_flag){
 
 		MANAGER_update_seconds_uart();
+
 		g_handler_flag=0;
 
 		I2C_read_rtc_time();
@@ -436,3 +486,5 @@ void MANAGER_I2C_to_UART_log(uint8_t log, UART_Type *uart)
 	}
 
 }
+
+

@@ -195,6 +195,7 @@ typedef enum {
 	PIN1,
 	PIN2,
 	PIN3,
+	PIN4,//////////////////
 	PIN14=14,
 	PIN15,
 	PIN16,

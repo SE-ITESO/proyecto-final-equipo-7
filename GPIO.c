@@ -19,6 +19,7 @@
 #include "fsl_clock.h"
 #include "fsl_gpio.h"
 #include "fsl_port.h"
+#include "fsl_common.h"
 #include <stdbool.h>
 
 volatile static gpio_interrupt_flags_t g_intr_status_flag = {0};
@@ -27,116 +28,13 @@ volatile static uint32_t g_intr_register_dec_pin = 0;
 
 volatile static uint32_t g_intr_register_pin = 0;
 
-volatile static boolean_t g_b1_pressed = FALSE;
-volatile static boolean_t g_b2_pressed = FALSE;
-volatile static boolean_t g_menu_pressed = FALSE;
-volatile static boolean_t g_kick_pressed = FALSE;
-volatile static boolean_t g_snare_pressed = FALSE;
-volatile static boolean_t g_bongo_pressed = FALSE;
-volatile static boolean_t g_hithat_pressed = FALSE;
-volatile static boolean_t g_guiro_pressed = FALSE;
-volatile static boolean_t g_rimshot_pressed = FALSE;
-volatile static boolean_t g_tambor_pressed = FALSE;
-volatile static boolean_t g_cynbal_pressed = FALSE;
-volatile static boolean_t g_cowbell_pressed = FALSE;
+
 
 static void (*GPIOA_callback)(uint32_t flags) = 0;
 static void (*GPIOB_callback)(uint32_t flags) = 0;
 static void (*GPIOC_callback)(uint32_t flags) = 0;
 static void (*GPIOD_callback)(uint32_t flags) = 0;
-
-boolean_t GPIO_get_b1_pressed(){
-	return g_b1_pressed;
-}
-void GPIO_set_b1_pressed(boolean_t value){
-	g_b1_pressed = value;
-}
-
-boolean_t GPIO_get_b2_pressed(){
-	return g_b2_pressed;
-}
-void GPIO_set_b2_pressed(boolean_t value){
-	g_b2_pressed = value;
-}
-
-boolean_t GPIO_get_menu_pressed(){
-	return g_menu_pressed;
-}
-void GPIO_set_menu_pressed(boolean_t value){
-	g_menu_pressed = value;
-}
-
-boolean_t GPIO_get_kick_pressed(){
-	return g_kick_pressed;
-}
-
-boolean_t GPIO_get_snare_pressed(){
-	return g_snare_pressed;
-}
-
-boolean_t GPIO_get_bongo_pressed(){
-	return g_bongo_pressed;
-}
-
-boolean_t GPIO_get_hithat_pressed(){
-	return g_hithat_pressed;
-}
-
-boolean_t GPIO_get_guiro_pressed(){
-	return g_guiro_pressed;
-}
-
-boolean_t GPIO_get_rimshot_pressed(){
-	return g_rimshot_pressed;
-}
-
-boolean_t GPIO_get_tambor_pressed(){
-	return g_tambor_pressed;
-}
-
-boolean_t GPIO_get_cynbal_pressed(){
-	return g_cynbal_pressed;
-}
-
-boolean_t GPIO_get_cowbell_pressed(){
-	return g_cowbell_pressed;
-}
-
-void GPIO_set_kick_pressed(boolean_t value){
-	g_kick_pressed = value;
-}
-
-void GPIO_set_snare_pressed(boolean_t value){
-	g_snare_pressed = value;
-}
-
-void GPIO_set_bongo_pressed(boolean_t value){
-	g_bongo_pressed = value;
-}
-
-void GPIO_set_hithat_pressed(boolean_t value){
-	g_hithat_pressed = value;
-}
-
-void GPIO_set_guiro_pressed(boolean_t value){
-	g_guiro_pressed = value;
-}
-
-void GPIO_set_rimshot_pressed(boolean_t value){
-	g_rimshot_pressed = value;
-}
-
-void GPIO_set_tambor_pressed(boolean_t value){
-	g_tambor_pressed = value;
-}
-
-void GPIO_set_cynbal_pressed(boolean_t value){
-	g_cynbal_pressed = value;
-}
-
-void GPIO_set_cowbell_pressed(boolean_t value){
-	g_cowbell_pressed = value;
-}
+static void (*GPIOE_callback)(uint32_t flags) = 0;
 
 
 
@@ -163,99 +61,7 @@ void GPIO_callback_init(GPIO_Name_t gpio, void (*handler)(uint32_t flags))
 			break;
 	}
 }
-/*
-void PORTA_IRQHandler(void)
-{
-	g_intr_status_flag.flag_port_a = TRUE;
-	uint32_t irq_status = 0;
-	irq_status = GPIO_PortGetInterruptFlags(GPIOA);
 
-	if(irq_status & BUTTON_MENU_MASK){
-		g_menu_pressed=TRUE;
-	}
-	GPIO_PortClearInterruptFlags(GPIOA, irq_status);
-}
-
-void PORTB_IRQHandler(void)
-{
-	uint32_t irq_status = 0;
-	irq_status = GPIO_PortGetInterruptFlags(GPIOB);
-
-	if(irq_status & SOUND_KICK_MASK){
-		g_kick_pressed=TRUE;
-	}
-
-	if(irq_status & SOUND_SNARE_MASK){
-		g_snare_pressed=TRUE;
-	}
-
-	if(irq_status & SOUND_GUIRO_MASK){
-		g_guiro_pressed=TRUE;
-	}
-
-	if(irq_status & SOUND_TAMBOR_MASK){
-		g_tambor_pressed=TRUE;
-	}
-
-	if(GPIOB_callback)
-	{
-		GPIOB_callback(irq_status);
-	}
-	GPIO_PortClearInterruptFlags(GPIOB, irq_status);
-}
-
-void PORTC_IRQHandler(void)
-{
-	uint32_t irq_status = 0;
-	irq_status = GPIO_PortGetInterruptFlags(GPIOC);
-
-	if(irq_status & SOUND_BONGO_MASK){
-		g_bongo_pressed=TRUE;
-	}
-
-	if(irq_status & SOUND_HITHAT_MASK){
-		g_hithat_pressed=TRUE;
-	}
-
-	if(irq_status & SOUND_RIMSHOT_MASK){
-		g_rimshot_pressed=TRUE;
-	}
-
-	if(irq_status & SOUND_CYNBAL_MASK){
-		g_cynbal_pressed=TRUE;
-	}
-
-	if(irq_status & SOUND_COWBELL_MASK){
-		g_cowbell_pressed=TRUE;
-	}
-
-	if(GPIOC_callback)
-	{
-		GPIOC_callback(irq_status);
-	}
-
-	GPIO_PortClearInterruptFlags(GPIOC, irq_status);
-}
-
-void PORTD_IRQHandler(void)
-{
-	g_intr_status_flag.flag_port_d = TRUE;
-	uint32_t irq_status = 0;
-	irq_status = GPIO_PortGetInterruptFlags(GPIOD);
-
-	if(irq_status & BUTTON_B1_MASK){
-		g_b1_pressed=TRUE;
-	}
-
-	if(irq_status & BUTTON_B2_MASK){
-		g_b2_pressed=TRUE;
-	}
-
-	GPIO_PortClearInterruptFlags(GPIOD, irq_status);
-
-
-}
-*/
 
 void GPIO_port_irq_clr(GPIO_t *gpio)
 {
@@ -518,3 +324,30 @@ void GPIO_port_isf_clr(const char *port, uint32_t pin)
 	*port_pcr |= PORT_PCR_ISF_MASK;
 
 }
+
+
+
+void GPIOE_callback_init( void (*handler)(uint32_t flags))
+{
+	GPIOE_callback = handler;
+
+
+
+}
+
+void PORTE_IRQHandler(void)
+{
+	uint32_t irq_status = 0;
+	irq_status = GPIO_PortGetInterruptFlags(GPIOE);
+
+	if (GPIOE_callback)
+	{
+		GPIOE_callback(irq_status);
+	}
+
+	GPIO_port_isf_clr("E", 24); //pin
+
+
+
+}
+

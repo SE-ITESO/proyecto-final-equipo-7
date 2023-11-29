@@ -31,9 +31,9 @@ PID_Gain_t PID1;
 
 void MOTOR_set_PID()
 {
-	PID1.kp =19;
-	PID1.ki = 7;
-	PID1.kd = 1;
+	PID1.kp = 1;
+	PID1.ki = 0.001;
+	PID1.kd = 0;
 }
 
 void MOTOR_config()
@@ -93,7 +93,8 @@ static float upk;
 static float uik;
 static float uik_;
 static float udk;
-static int8_t uk;
+static float ukv;
+static uint8_t uk;
 
 void MOTOR_PID_flag()
 {
@@ -111,29 +112,41 @@ void MOTOR_PID(float ref)
 		uik_ = uik;
 		udk = (PID1.kd/T)*(error-error_);
 		error_ = error;
-		uk = abs(upk + uik + udk);
-		if(uk>80)
+		ukv = (upk + uik + udk);
+
+		if(ukv>12)
 		{
-			uk=80;
-		}else if(uk<55)
+			ukv=12;
+		}else if(ukv<-12)
 		{
-			uk=55;
+			ukv=-12;
+		}
+		if((ukv<3.8)&&(ukv>0))
+		{
+			ukv=3.8;
+		}
+		else if((ukv>-3.8)&&(ukv<0))
+		{
+			ukv=-3.8;
 		}
 
-		if((error<0.00001)&&(error>(-0.00001)))
+		uk = abs((ukv*255)/12);
+
+
+		/*if((error<0.00001)&&(error>(-0.00001)))
 		{
 			FTM_set_PWM(FTM0, 0, 0);
 			FTM_set_PWM(FTM0, 1, 0);
-		}
+		}*/
 
-		else if (error>0)
-		{
-			FTM_set_PWM(FTM0, 1, uk);
-			FTM_set_PWM(FTM0, 0, 0);
-		}else if(error<0)
+		if (ukv>0)
 		{
 			FTM_set_PWM(FTM0, 0, uk);
 			FTM_set_PWM(FTM0, 1, 0);
+		}else if(ukv<0)
+		{
+			FTM_set_PWM(FTM0, 1, uk);
+			FTM_set_PWM(FTM0, 0, 0);
 		}
 
 	}

@@ -29,11 +29,15 @@ uint8_t g_transfer_success_flag;
 
 void I2C_init()
 {
+		CLOCK_EnableClock(kCLOCK_PortC);
+		PORT_SetPinMux(PORTC, PIN10, kPORT_MuxAlt2);
+		PORT_SetPinMux(PORTC, PIN11, kPORT_MuxAlt2);
 		i2c_master_config_t masterConfig;
 		uint32_t sourceClock = I2C_MASTER_CLK_FREQ;
 	    I2C_MasterGetDefaultConfig(&masterConfig);
 	    masterConfig.baudRate_Bps = I2C_BAUDRATE;
 	    I2C_MasterInit(I2C0, &masterConfig, sourceClock);
+
 }
 
 

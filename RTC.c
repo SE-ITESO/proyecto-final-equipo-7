@@ -57,7 +57,6 @@ void RTC_config()
     CLOCK_EnableClock(kCLOCK_PortB);
     PORT_SetPinMux(PORTB, PIN2, kPORT_MuxAlt2);
     PORT_SetPinMux(PORTB, PIN3, kPORT_MuxAlt2);
-    CLOCK_EnableClock(kCLOCK_PortE);
     port_pin_config_t config = {
         kPORT_PullUp,
         kPORT_SlowSlewRate,
@@ -72,12 +71,9 @@ void RTC_config()
         0,
     };
 
-    PORT_SetPinConfig(PORTE, PIN24, &config);
-    GPIO_PinInit(GPIOE, PIN24, &interrupt_config);
-    PORT_SetPinInterruptConfig(PORTE, PIN24, kPORT_InterruptRisingEdge);
-
-    BOARD_InitBootClocks();
-    BOARD_InitDebugConsole();
+    PORT_SetPinConfig(PORTB, PIN10, &config);
+    GPIO_PinInit(GPIOB, PIN10, &interrupt_config);
+    PORT_SetPinInterruptConfig(PORTB, PIN10, kPORT_InterruptRisingEdge);
 
     g_rtc_config[0] = HOUR_FORMAT_MASK;
 	rtc.address = RTC_ADDRESS;
@@ -88,7 +84,6 @@ void RTC_config()
     I2C_write(rtc);
     RTC_set_squarewave();
 }
-
 void RTC_write_time(){
 	RTC_set_device_time();
 	I2C_write(rtc);

@@ -36,16 +36,16 @@ void FTM_init()
 	/**Enables the writing over all registers*/
 	FTM0->MODE &= ~FLEX_TIMER_FTMEN;
 	/**Assigning a default value for modulo register*/
-	FTM0->MOD = 0xFF;
+	FTM0->MOD = 0x00FF;
 	/**Selects the Edge-Aligned PWM mode mode*/
 	FTM0->CONTROLS[0].CnSC = FLEX_TIMER_MSB | FLEX_TIMER_ELSB;
 	/**Assign a duty cycle of 50%*/
-	FTM0->CONTROLS[0].CnV = 0;
+	FTM0->CONTROLS[0].CnV = FTM0->MOD/2;
 	/**Configure the times*/
 	FTM0->SC = FLEX_TIMER_CLKS_1|FLEX_TIMER_PS_128;
 
 	FTM0->CONTROLS[1].CnSC = FLEX_TIMER_MSB | FLEX_TIMER_ELSB;
-	/**Assign a duty cycle of 50%*/
+	/**Assign a duty cycle of 0%*/
 	FTM0->CONTROLS[1].CnV = 0;
 
 }

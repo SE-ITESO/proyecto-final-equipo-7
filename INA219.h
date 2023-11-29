@@ -11,6 +11,8 @@
 #include "stdint.h"
 
 void INA219_config();
+void INA219_calib();
+void INA219_init();
 void INA219_set_device();
 void INA219_read_curr();
 uint8_t* INA219_get_curr();

@@ -11,7 +11,7 @@
 #include "stdint.h"
 
 #define PI 3.1416
-#define ENCODER_TO_MOTOR 880
+#define ENCODER_TO_MOTOR 816
 #define RAD_CONVERSION 2*PI
 
 void MOTOR_config();

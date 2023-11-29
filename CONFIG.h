@@ -24,6 +24,8 @@ typedef enum {
 }BAUDRATE_Value_t;
 
 
+
+
 typedef enum{FALSE, TRUE} boolean_t;
 
 typedef enum {
@@ -167,11 +169,15 @@ typedef enum {
 	PIN2,
 	PIN3,
 	PIN10=10,
-	PIN14=14,
+	PIN11,
+	PIN12,
+	PIN13,
+	PIN14,
 	PIN15,
 	PIN16,
 	PIN17,
-	PIN24=24
+	PIN24=24,
+	PIN25
 }Pin_t;
 
 typedef enum {
@@ -223,4 +229,11 @@ typedef enum {
 	LOG_4_ADD_CAP = 0xBE9U,
 	LOG_5_ADD_CAP = 0xBF9U
 }LOG_Address_t;
+
+typedef enum{
+	LDR_LU = 12,
+	LDR_LD,
+	LDR_RU = 17,
+	LDR_RD
+}LDR_Names_;
 #endif /* CONFIG_H_ */

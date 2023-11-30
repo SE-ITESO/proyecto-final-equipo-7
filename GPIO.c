@@ -15,11 +15,9 @@
  */
 #include "MK64F12.h"
 #include "GPIO.h"
-#include "CONFIG.h"
 #include "fsl_clock.h"
 #include "fsl_gpio.h"
 #include "fsl_port.h"
-#include "fsl_common.h"
 #include <stdbool.h>
 
 volatile static gpio_interrupt_flags_t g_intr_status_flag = {0};
@@ -28,38 +26,86 @@ volatile static uint32_t g_intr_register_dec_pin = 0;
 
 volatile static uint32_t g_intr_register_pin = 0;
 
-
-
-static void (*GPIOA_callback)(uint32_t flags) = 0;
 static void (*GPIOB_callback)(uint32_t flags) = 0;
 static void (*GPIOC_callback)(uint32_t flags) = 0;
 static void (*GPIOD_callback)(uint32_t flags) = 0;
 static void (*GPIOE_callback)(uint32_t flags) = 0;
 
 
-
-void GPIO_callback_init(GPIO_Name_t gpio, void (*handler)(uint32_t flags))
+void GPIOB_callback_init( void (*handler)(uint32_t flags))
 {
-	switch(gpio){
-		case GPIOA_name:
-			GPIOA_callback = handler;
-			break;
+	GPIOB_callback = handler;
 
-		case GPIOB_name:
-			GPIOB_callback = handler;
-			break;
+}
 
-		case GPIOC_name:
-			GPIOC_callback = handler;
-			break;
+void PORTB_IRQHandler(void)
+{
+	uint32_t irq_status = 0;
+	irq_status = GPIO_PortGetInterruptFlags(GPIOB);
 
-		case GPIOD_name:
-			GPIOD_callback = handler;
-			break;
-
-		default:
-			break;
+	if (GPIOB_callback)
+	{
+		GPIOB_callback(irq_status);
 	}
+
+	GPIO_port_isf_clr("B", 10);
+}
+
+void GPIOC_callback_init( void (*handler)(uint32_t flags))
+{
+	GPIOC_callback = handler;
+
+}
+
+void PORTC_IRQHandler(void)
+{
+	uint32_t irq_status = 0;
+	irq_status = GPIO_PortGetInterruptFlags(GPIOC);
+
+	if (GPIOC_callback)
+	{
+		GPIOC_callback(irq_status);
+	}
+
+	GPIO_port_isf_clr("C", 11);
+}
+
+void GPIOD_callback_init( void (*handler)(uint32_t flags))
+{
+	GPIOD_callback = handler;
+
+}
+
+void PORTD_IRQHandler(void)
+{
+	uint32_t irq_status = 0;
+	irq_status = GPIO_PortGetInterruptFlags(GPIOD);
+
+	if (GPIOD_callback)
+	{
+		GPIOD_callback(irq_status);
+	}
+
+	GPIO_port_isf_clr("D", 3);
+}
+
+void GPIOE_callback_init( void (*handler)(uint32_t flags))
+{
+	GPIOE_callback = handler;
+
+}
+
+void PORTE_IRQHandler(void)
+{
+	uint32_t irq_status = 0;
+	irq_status = GPIO_PortGetInterruptFlags(GPIOE);
+
+	if (GPIOE_callback)
+	{
+		GPIOE_callback(irq_status);
+	}
+
+	GPIO_port_isf_clr("E", 24);
 }
 
 
@@ -73,17 +119,11 @@ void GPIO_port_irq_clr(GPIO_t *gpio)
 	{
 		g_intr_status_flag.flag_port_b = false;
 	}
-	if(GPIOD == gpio)
-	{
-		g_intr_status_flag.flag_port_d = false;
-	}
 	else
 	{
 		g_intr_status_flag.flag_port_c = false;
 	}
 }
-
-
 
 uint8_t GPIO_port_irq_get(GPIO_t *gpio, uint32_t pin)
 {
@@ -106,16 +146,8 @@ uint8_t GPIO_port_irq_get(GPIO_t *gpio, uint32_t pin)
 			status = g_intr_status_flag.flag_port_c;
 		}
 	}
-	else if(GPIOD == gpio)
-		{
-			if(pin==g_intr_register_pin){
-				status = g_intr_status_flag.flag_port_d;
-			}
-		}
 	return(status);
 }
-
-
 
 void GPIO_clock_gating(const char *ports)
 {
@@ -203,8 +235,6 @@ void GPIO_pin_tog(GPIO_t *gpio, uint32_t pin)
 {
     gpio->PTOR = (1u << pin);
 }
-
-
 
 void GPIO_pin_pe(const char *port, uint32_t pin)
 {
@@ -324,30 +354,3 @@ void GPIO_port_isf_clr(const char *port, uint32_t pin)
 	*port_pcr |= PORT_PCR_ISF_MASK;
 
 }
-
-
-
-void GPIOE_callback_init( void (*handler)(uint32_t flags))
-{
-	GPIOE_callback = handler;
-
-
-
-}
-
-void PORTE_IRQHandler(void)
-{
-	uint32_t irq_status = 0;
-	irq_status = GPIO_PortGetInterruptFlags(GPIOE);
-
-	if (GPIOE_callback)
-	{
-		GPIOE_callback(irq_status);
-	}
-
-	GPIO_port_isf_clr("E", 24); //pin
-
-
-
-}
-

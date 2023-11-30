@@ -17,7 +17,6 @@
 #define GPIO_H_
 
 #include "stdint.h"
-#include "CONFIG.h"
 
 #define SIM_5		(*((volatile uint32_t *) 0x40048038))
 #define GPIOA_BASE	((volatile uint32_t *) 0x400FF000)
@@ -37,16 +36,6 @@ typedef struct
 	uint32_t PDIR;
 	uint32_t PDDR;
 } GPIO_t;
-
-
-typedef struct
-{
-	uint8_t flag_port_a : 1;
-	uint8_t flag_port_b : 1;
-	uint8_t flag_port_c : 1;
-	uint8_t flag_port_d : 1;
-	uint8_t flag_port_e : 1;
-} gpio_interrupt_flags_t;
 
 #define GPIOA ((GPIO_t*) GPIOA_BASE )
 #define GPIOB ((GPIO_t*) GPIOB_BASE )
@@ -73,26 +62,23 @@ void GPIO_pin_set_interrupt_fe(const char *port, uint32_t pin); //sets ISF flag 
 void GPIO_port_isf_clr(const char *port, uint32_t pin);  //clears Interrupt Status Flag
 void GPIO_port_irq_clr(GPIO_t *gpio); 		//clears interruption request flags
 uint8_t GPIO_port_irq_get(GPIO_t *gpio, uint32_t pin);	//gets interruption request flag info
-
-void GPIO_callback_init(GPIO_Name_t gpio, void (*handler)(uint32_t flags));
-
-boolean_t GPIO_get_b1_pressed();
-void GPIO_set_b1_pressed(boolean_t value);
-boolean_t GPIO_get_b2_pressed();
-void GPIO_set_b2_pressed(boolean_t value);
-boolean_t GPIO_get_menu_pressed();
-void GPIO_set_menu_pressed(boolean_t value);
-boolean_t GPIO_get_kick_pressed();
-boolean_t GPIO_get_snare_pressed();
-boolean_t GPIO_get_bongo_pressed();
-boolean_t GPIO_get_hithat_pressed();
-boolean_t GPIO_get_guiro_pressed();
-boolean_t GPIO_get_rimshot_pressed();
-boolean_t GPIO_get_tambor_pressed();
-boolean_t GPIO_get_cynbal_pressed();
-boolean_t GPIO_get_cowbell_pressed();
-
+void GPIOB_callback_init();
+void GPIOC_callback_init();
+void GPIOD_callback_init();
 void GPIOE_callback_init();
+
+typedef struct
+{
+	uint8_t flag_port_a : 1;
+	uint8_t flag_port_b : 1;
+	uint8_t flag_port_c : 1;
+	uint8_t flag_port_d : 1;
+	uint8_t flag_port_e : 1;
+} gpio_interrupt_flags_t;
+
+
+
+
 
 
 #endif /* GPIO_H_ */

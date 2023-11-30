@@ -20,6 +20,7 @@
 #include "TERMINAL.h"
 #include "RTC.h"
 #include "LOGGER.h"
+#include "LCD_nokia.h"
 
 uint8_t g_handler_flag=0;
 uint8_t g_handler_terminal1_flag=0;
@@ -104,14 +105,13 @@ void MANAGER_INA_to_TERMINAL_curr()
 
 void MANAGER_update_seconds_terminal()
 {
-	if((g_handler_terminal1_flag)&&(g_handler_flag)){
+	if(g_handler_terminal1_flag){
 		MANAGER_RTC_to_TERMINAL_time();
 		TERMINAL_update_time();
 		TERMINAL_change_seconds(TERMINAL_1);
 	}
 
-	else if((g_handler_terminal2_flag)&&(g_handler_flag)){
-		RTC_read_time();
+	else if(g_handler_terminal2_flag){
 		MANAGER_RTC_to_TERMINAL_time();
 		TERMINAL_update_time();
 		TERMINAL_change_seconds(TERMINAL_2);
@@ -192,14 +192,77 @@ void MANAGER_set_log(uint8_t log, uint8_t time, uint8_t caps1, uint8_t caps2)
 void MANAGER_handler_flag(){
 	g_handler_flag=1;
 }
+
+void MANAGER_RTC_to_LCD() {
+    uint8_t formattedDate[6];
+
+	uint8_t* i2c_rx_date = RTC_get_date();
+
+	uint16_t year =  i2c_rx_date[RTC_YEAR_INDEX];
+	uint8_t month = i2c_rx_date[RTC_MONTH_INDEX];
+	uint8_t day = i2c_rx_date[RTC_DAY_INDEX];
+
+    formattedDate[0] = (day >> 4) & UNITS_MASK;       // Tens of Day
+    formattedDate[1] = day & UNITS_MASK;              // Units of Day
+    formattedDate[2] = (month >> 4) & UNITS_MASK;     // Tens of Month
+    formattedDate[3] = month & UNITS_MASK;            // Units of Month
+    formattedDate[4] = (year >> 4) & UNITS_MASK;      // Tens of Year
+    formattedDate[5] = year & UNITS_MASK;             // Units of Year
+
+
+    LCD_nokia_goto_xy(2, 1);
+    LCD_nokia_send_char(formattedDate[0] + '0');
+    LCD_nokia_send_char(formattedDate[1] + '0');
+    LCD_nokia_send_char('/');
+    LCD_nokia_send_char(formattedDate[2] + '0');
+    LCD_nokia_send_char(formattedDate[3] + '0');
+    LCD_nokia_send_char('/');
+    LCD_nokia_send_char('2');
+    LCD_nokia_send_char('0');
+    LCD_nokia_send_char(formattedDate[4] + '0');
+    LCD_nokia_send_char(formattedDate[5] + '0');
+
+    uint8_t formattedTime[6];
+
+	 uint8_t* i2c_rx_time = RTC_get_time();
+
+	 uint8_t seconds = i2c_rx_time[RTC_SECONDS_INDEX];
+	 uint8_t minutes = i2c_rx_time[RTC_MINUTES_INDEX];
+	 uint8_t hours = i2c_rx_time[RTC_HOURS_INDEX];
+
+
+	formattedTime[0] = ((hours >> 4) & UNITS_MASK);       // Tens of Hours
+	formattedTime[1] = hours & UNITS_MASK;                // Units of Hours
+	formattedTime[2] = ((minutes >> 4) & UNITS_MASK);     // Tens of Minutes
+	formattedTime[3] = minutes & UNITS_MASK;              // Units of Minutes
+	formattedTime[4] = ((seconds >> 4) & UNITS_MASK);     // Tens of Seconds
+	formattedTime[5] = seconds & UNITS_MASK;              // Units of Seconds
+
+
+	LCD_nokia_goto_xy(2, 2);
+	LCD_nokia_send_char(formattedTime[0] + '0');
+	LCD_nokia_send_char(formattedTime[1] + '0');
+	LCD_nokia_send_char(':');
+	LCD_nokia_send_char(formattedTime[2] + '0');
+	LCD_nokia_send_char(formattedTime[3] + '0');
+	LCD_nokia_send_char(':');
+	LCD_nokia_send_char(formattedTime[4] + '0');
+	LCD_nokia_send_char(formattedTime[5] + '0');
+}
+
+void MANAGER_data_update_seconds_lcd()
+{
+		MANAGER_RTC_to_LCD();
+}
 void MANAGER_handler_log()
 {
 	if(g_handler_flag){
 
 		g_handler_flag=0;
 		RTC_read_time();
-		RTC_read_date();
 		MANAGER_update_seconds_terminal();
+		MANAGER_data_update_seconds_lcd();
+		RTC_read_date();
 
 		if(dataLog1.flag){
 			if(dataLog1.time == dataLog1.time_count){

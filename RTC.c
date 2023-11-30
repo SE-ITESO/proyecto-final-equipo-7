@@ -11,7 +11,6 @@
 #include "fsl_i2c.h"
 #include "fsl_port.h"
 #include "fsl_gpio.h"
-#include "board.h"
 
 uint8_t g_rtc_time[3] = {0,0,0};
 uint8_t g_rtc_date[3] = {0,0,0};
@@ -54,9 +53,6 @@ void RTC_set_squarewave(){
 
 void RTC_config()
 {
-    CLOCK_EnableClock(kCLOCK_PortB);
-    PORT_SetPinMux(PORTB, PIN2, kPORT_MuxAlt2);
-    PORT_SetPinMux(PORTB, PIN3, kPORT_MuxAlt2);
     port_pin_config_t config = {
         kPORT_PullUp,
         kPORT_SlowSlewRate,
@@ -70,6 +66,7 @@ void RTC_config()
         kGPIO_DigitalInput,
         0,
     };
+    CLOCK_EnableClock(kCLOCK_PortB);
 
     PORT_SetPinConfig(PORTB, PIN10, &config);
     GPIO_PinInit(GPIOB, PIN10, &interrupt_config);

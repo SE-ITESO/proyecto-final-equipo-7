@@ -16,7 +16,8 @@
 void LDR_config()
 {
 
-	GPIO_clock_gating("BE");
+	CLOCK_EnableClock(kCLOCK_PortB);
+	CLOCK_EnableClock(kCLOCK_PortE);
 
 	 port_pin_config_t config = {
 		kPORT_PullUp,
@@ -42,4 +43,5 @@ uint16_t LDR_read(uint8_t ldr)
 {
 	return ADC_set_conversion(ldr);
 }
+
 

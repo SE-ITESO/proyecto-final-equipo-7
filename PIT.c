@@ -26,10 +26,10 @@ void PIT_init()
 	PIT_GetDefaultConfig(&pitConfig);
 	PIT_Init(PIT, &pitConfig);
 	PIT_EnableInterrupts(PIT, kPIT_Chnl_0, kPIT_TimerInterruptEnable);
-	//PIT_EnableInterrupts(PIT, kPIT_Chnl_1, kPIT_TimerInterruptEnable);
+	PIT_EnableInterrupts(PIT, kPIT_Chnl_1, kPIT_TimerInterruptEnable);
 	//PIT_EnableInterrupts(PIT, kPIT_Chnl_2, kPIT_TimerInterruptEnable);
 	EnableIRQ(PIT0_IRQn);
-	//EnableIRQ(PIT1_IRQn);
+	EnableIRQ(PIT1_IRQn);
 	//EnableIRQ(PIT2_IRQn);
 }
 
@@ -94,14 +94,14 @@ void PIT0_IRQHandler()
 	PIT_ClearStatusFlags(PIT, kPIT_Chnl_0, kPIT_TimerFlag);
 }
 
-void PIT2_IRQHandler()
+void PIT1_IRQHandler()
 {
 
 
-	if (PIT2_callback)
+	if (PIT1_callback)
 	{
-		PIT2_callback(1);
+		PIT1_callback(1);
 	}
 
-	PIT_ClearStatusFlags(PIT, kPIT_Chnl_2, kPIT_TimerFlag);
+	PIT_ClearStatusFlags(PIT, kPIT_Chnl_1, kPIT_TimerFlag);
 }

@@ -15,15 +15,45 @@
 #define SLASH_POSITION1 			1
 #define SLASH_POSITION2 			3
 #define WDT_WINDOW					3000u
-#define I2C_MASTER_CLK_FREQ         CLOCK_GetFreq(I2C0_CLK_SRC)
+#define I2C_MASTER_CLK_FREQ         CLOCK_GetFreq(I2C1_CLK_SRC)
 #define UART_CLK_FREQ  				CLOCK_GetFreq(UART0_CLK_SRC)
-
+#define DSPI_MASTER_CLK_FREQ        CLOCK_GetFreq(DSPI0_CLK_SRC)
+#define WELCOME_TIME				2000000
 typedef enum {
 	I2C_BAUDRATE = 400000U,
 	UART_BAUDRATE = 115200U
 }BAUDRATE_Value_t;
 
+typedef struct {
+    uint8_t flag;
+    uint32_t time;
+    uint8_t caps;
+    uint32_t time_count;
+    uint8_t caps_count;
+} LOG_Data_t;
 
+typedef enum {
+	 TRANSFER_SIZE = 8U,
+	 SOUNDS_BUFFER_SIZE	= 20u,
+	 TRANSFER_BAUDRATE 	=	5000000U, /*! Transfer baudrate - 500k */
+	 TRANSFER_BAUDRATE_MEM =	2000000U, /*! Transfer baudrate - 500k */
+} SPI_config_t;
+
+typedef enum {
+	CE_LCD = 0,
+	LCD_CMD = 0,
+	LCD_DATA = 1,
+	DATA_OR_CMD_PIN = 5,
+	LCD_MARG = 5u,
+	LCD_CHAR_WIDTH = 7u,
+	RESET_PIN = 7,
+	LCD_Y = 48,
+	SCREENH = 48,
+	LCD_X = 84,
+	SCREENW = 84,
+	IMAGE_SIZE = 504,
+
+} LCD_config_t;
 
 
 typedef enum{FALSE, TRUE} boolean_t;
@@ -98,14 +128,6 @@ typedef struct {
     uint8_t read_curr : 1;
 } UART_Flags_t;
 
-typedef struct {
-    uint8_t flag;
-    uint32_t time;
-    uint8_t caps;
-    uint32_t time_count;
-    uint8_t caps_count;
-} LOG_Data_t;
-
 typedef struct{
 	uint8_t address;
 	uint16_t subaddress;
@@ -151,7 +173,7 @@ typedef struct{
 
 typedef enum {
 	LOG_FORMAT_LENGHT = 2,
-	CURR_FORMAT_LENGHT = 4,
+	CURR_FORMAT_LENGHT = 2,
 	TIME_FORMAT_LENGTH = 6,
 	DATE_FORMAT_LENGHT = 6,
 	EEPROM_FORMAT_LENGHT = 8,
@@ -205,7 +227,7 @@ typedef enum {
 	RTC_SQUAREWAVE_SUBADDRESS = 0x07U,
 	EEPROM_ADDRESS = 0x50U,
 	INA219_ADDRESS = 0x40U,
-	INA219_CURR_SUBADDRESS = 0x03U
+	INA219_CURR_SUBADDRESS = 0x02U
 }I2C_Address_t;
 
 
@@ -219,15 +241,15 @@ typedef enum {
 
 typedef enum {
 	LOG_1_ADDRESS = 0x000,
-	LOG_2_ADDRESS = 0x258U,
-	LOG_3_ADDRESS = 0x4B0U,
-	LOG_4_ADDRESS = 0x708U,
-	LOG_5_ADDRESS = 0x960U,
-	LOG_1_ADD_CAP = 0xBB9U,
-	LOG_2_ADD_CAP = 0xBC9U,
-	LOG_3_ADD_CAP = 0xBD9U,
-	LOG_4_ADD_CAP = 0xBE9U,
-	LOG_5_ADD_CAP = 0xBF9U
+	LOG_2_ADDRESS = 0x190U,
+	LOG_3_ADDRESS = 0x320U,
+	LOG_4_ADDRESS = 0x4B0U,
+	LOG_5_ADDRESS = 0x640U,
+	LOG_1_ADD_CAP = 0x7D0U,
+	LOG_2_ADD_CAP = 0x7D1U,
+	LOG_3_ADD_CAP = 0x7D2U,
+	LOG_4_ADD_CAP = 0x7D3U,
+	LOG_5_ADD_CAP = 0x7D4U
 }LOG_Address_t;
 
 typedef enum{

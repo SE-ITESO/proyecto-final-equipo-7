@@ -291,7 +291,7 @@ void SM_state_machine()
 			case SET_LOG_FLAG:
 				if((ENTER_KEY == TERMINAL1_input) && (log1_input_position == LOG_FORMAT_LENGHT))
 				{
-					switch(log2_step)
+					switch(log1_step)
 					{
 						case 0:
 							TERMINAL_msg_set_log_confirm(TERMINAL_1);
@@ -300,7 +300,7 @@ void SM_state_machine()
 							break;
 
 						case 1:
-							if(log2_yes){
+							if(log1_yes){
 								TERMINAL_show_set_log_time(TERMINAL_1);
 								log1_input_position--;
 								log1_step++;

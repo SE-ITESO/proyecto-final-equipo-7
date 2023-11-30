@@ -27,25 +27,15 @@
 #include "MANAGER.h"
 #include "SM.h"
 #include "FTM.h"
+#include "SPI.h"
 #include "RTC.h"
 #include "INA219.h"
 #include "CONFIG.h"
-#include "MOTOR.h"
 #include "PIT.h"
 #include "LDR.h"
 #include "CORE_config.h"
 #include "TRACKER.h"
-
-void delay(uint32_t delay)
-{
-	volatile int counter, counter_2;
-
-		for(counter_2 = 16; counter_2 > 0; counter_2--)
-		{
-			for(counter = delay; counter > 0; counter--);
-
-		}
-}
+#include "LCD_nokia.h"
 
 int main(void)
 {
@@ -59,6 +49,8 @@ int main(void)
 	INA219_init();
 	SM_init_flags();
 	LDR_config();
+	SPI_config();
+	LCD_nokia_init();
 
 	TERMINAL_show_options(UART0);
 	TERMINAL_show_options(UART4);
@@ -67,25 +59,27 @@ int main(void)
     UART_EnableInterrupts(UART4, kUART_RxDataRegFullInterruptEnable | kUART_RxOverrunInterruptEnable);
 
     NVIC_set_basepri_threshold(PRIORITY_7);
-    NVIC_enable_interrupt_and_priority(UART0_IRQ, PRIORITY_2);
-    NVIC_enable_interrupt_and_priority(UART4_IRQ, PRIORITY_2);
-    NVIC_enable_interrupt_and_priority(PORTE_IRQ, PRIORITY_5);
-        NVIC_enable_interrupt_and_priority(PIT_CH0_IRQ,PRIORITY_1);
-
+    NVIC_enable_interrupt_and_priority(UART0_IRQ, PRIORITY_3);
+    NVIC_enable_interrupt_and_priority(UART4_IRQ, PRIORITY_4);
+    NVIC_enable_interrupt_and_priority(PORTB_IRQ, PRIORITY_1);
+    NVIC_enable_interrupt_and_priority(PIT_CH0_IRQ,PRIORITY_2);
     NVIC_global_enable_interrupts;
-
-	GPIOE_callback_init(MANAGER_handler_flag);
-
+	GPIOB_callback_init(MANAGER_handler_flag);
+	PIT_timer_period(PIT_CHANNEL_1,WELCOME_TIME);
+	PIT_callback_init(PIT_CHANNEL_1,LCD_nokia_clr_welcome_flag);
+	PIT_start(PIT_CHANNEL_1);
     PIT_timer_period(PIT_CHANNEL_0, 10000);
     PIT_callback_init(PIT_CHANNEL_0, TRACKER_flag_on);
     PIT_start(PIT_CHANNEL_0);
-
-
+    LCD_nokia_show_welcome();
     while (1)
     {
-    	MANAGER_handler_log();
-    	SM_state_machine();
-    	TRACKER_handler();
+    	if(FALSE==LCD_nokia_get_welcome_flag())
+    	{
+			MANAGER_handler_log();
+			SM_state_machine();
+			TRACKER_handler();
+    	}
     }
 }
 

@@ -135,6 +135,7 @@ void LOGGER_write_caps(uint8_t log, uint8_t caps)
         default:
             break;
     }
+    LOGGER_set_device();
     eeprom.data[0] = caps;
     eeprom.dataSize = 1;
     I2C_write(eeprom);
@@ -164,6 +165,7 @@ uint8_t LOGGER_read_caps(uint8_t log)
         default:
             break;
     }
+    LOGGER_set_device();
     eeprom.data = savedCaps;
     eeprom.dataSize = 1;
     I2C_read(eeprom);

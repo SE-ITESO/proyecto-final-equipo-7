@@ -264,16 +264,16 @@ void LCD_nokia_show_date() {
     formattedDate[5] = year & UNITS_MASK;             // Units of Year
 
     LCD_nokia_goto_xy(2, 1);
-    LCD_nokia_send_char(formattedDate[0] + '0');
-    LCD_nokia_send_char(formattedDate[1] + '0');
+    LCD_nokia_send_char(formattedDate[0] + CHAR_TO_INT);
+    LCD_nokia_send_char(formattedDate[1] + CHAR_TO_INT);
     LCD_nokia_send_char('/');
-    LCD_nokia_send_char(formattedDate[2] + '0');
-    LCD_nokia_send_char(formattedDate[3] + '0');
+    LCD_nokia_send_char(formattedDate[2] + CHAR_TO_INT);
+    LCD_nokia_send_char(formattedDate[3] + CHAR_TO_INT);
     LCD_nokia_send_char('/');
     LCD_nokia_send_char('2');
     LCD_nokia_send_char('0');
-    LCD_nokia_send_char(formattedDate[4] + '0');
-    LCD_nokia_send_char(formattedDate[5] + '0');
+    LCD_nokia_send_char(formattedDate[4] + CHAR_TO_INT);
+    LCD_nokia_send_char(formattedDate[5] + CHAR_TO_INT);
 }
 
 
@@ -296,14 +296,14 @@ void LCD_nokia_show_time() {
 
 
     LCD_nokia_goto_xy(2, 2);
-    LCD_nokia_send_char(formattedTime[0] + '0');
-    LCD_nokia_send_char(formattedTime[1] + '0');
+    LCD_nokia_send_char(formattedTime[0] + CHAR_TO_INT);
+    LCD_nokia_send_char(formattedTime[1] + CHAR_TO_INT);
     LCD_nokia_send_char(':');
-    LCD_nokia_send_char(formattedTime[2] + '0');
-    LCD_nokia_send_char(formattedTime[3] + '0');
+    LCD_nokia_send_char(formattedTime[2] + CHAR_TO_INT);
+    LCD_nokia_send_char(formattedTime[3] + CHAR_TO_INT);
     LCD_nokia_send_char(':');
-    LCD_nokia_send_char(formattedTime[4] + '0');
-    LCD_nokia_send_char(formattedTime[5] + '0');
+    LCD_nokia_send_char(formattedTime[4] + CHAR_TO_INT);
+    LCD_nokia_send_char(formattedTime[5] + CHAR_TO_INT);
 }
 
 void LCD_nokia_show_current(){

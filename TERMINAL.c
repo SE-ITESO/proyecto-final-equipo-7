@@ -49,7 +49,7 @@ uint8_t g_vt100_strg_date1[] =  "La fecha actual es:\r";
 uint8_t g_vt100_strg_date2[] =  "00/00/0000\r";
 
 uint8_t g_vt100_strg_curr1[] = "Corriente actual:\r";
-uint8_t g_vt100_strg_curr2[] = "00.0 mA";
+uint8_t g_vt100_strg_curr2[] = "00.00 mA";
 
 uint8_t g_vt100_strg_timeset1[] =  "Introducir la hora actual en formato HH:MM:SS.\r";
 uint8_t g_vt100_strg_timeset2[] =  "La hora ha sido cambiada...\r";
@@ -60,9 +60,9 @@ uint8_t g_vt100_strg_dateset2[] =  "La fecha ha sido cambiada...\r";
 uint8_t g_vt100_strg_logset1[] =  "Cual log deseas activar: 1 a 5?\r";
 uint8_t g_vt100_strg_logset2[] =  "Desear confirmar la activacion?: Si-->y No-->n\r";
 uint8_t g_vt100_strg_logset3[] =  "Introducir tiempo de captura\r";
-uint8_t g_vt100_strg_logset4[] =  "Donde t puede tomar valores entre 3s y 10s. No es necesario intruducir la letra s, solo el valor numerico\r";
+uint8_t g_vt100_strg_logset4[] =  "Donde t puede tomar valores entre 1s y 9s. No es necesario intruducir la letra s, solo el valor numerico\r";
 uint8_t g_vt100_strg_logset5[] =  "Introducir numero de capturas\r";
-uint8_t g_vt100_strg_logset6[] =  "Donde c puede tomar valores entre 10 y 50.\r";
+uint8_t g_vt100_strg_logset6[] =  "Donde c puede tomar valores entre 02 y 50.\r";
 uint8_t g_vt100_strg_logset7[] =  "El log se ha cancelado...\r";
 uint8_t g_vt100_strg_logset8[] =  "El log se ha configurado...\r";
 
@@ -180,6 +180,15 @@ void TERMINAL_change_seconds(UART_Type *uart)
 	UART_WriteBlocking(uart, g_vt100_xy_2, sizeof(g_vt100_xy_2) / sizeof(g_vt100_xy_2[0]));
 	UART_WriteBlocking(uart, g_vt100_strg_time2, sizeof(g_vt100_strg_time2) / sizeof(g_vt100_strg_time2[0]));
 }
+
+void TERMINAL_change_current(UART_Type *uart)
+{
+	UART_WriteBlocking(uart, g_vt100_color_1, sizeof(g_vt100_color_1) / sizeof(g_vt100_color_1[0]));
+	UART_WriteBlocking(uart, g_vt100_color_2, sizeof(g_vt100_color_2) / sizeof(g_vt100_color_2[0]));
+	UART_WriteBlocking(uart, g_vt100_xy_2, sizeof(g_vt100_xy_2) / sizeof(g_vt100_xy_2[0]));
+	UART_WriteBlocking(uart, g_vt100_strg_curr2, sizeof(g_vt100_strg_curr2) / sizeof(g_vt100_strg_curr2[0]));
+}
+
 
 
 void TERMINAL_show_set_time(UART_Type *uart){
@@ -414,26 +423,22 @@ void TERMINAL_show_data_log(uint8_t log, UART_Type *uart)
 {
 	uint8_t* terminal_data_log = TERMINAL_get_data_log(log);
 
-	g_vt100_strg_logread2[13] = terminal_data_log[0]+CHAR_TO_INT;
-	g_vt100_strg_logread2[14] = terminal_data_log[1]+CHAR_TO_INT;
-	g_vt100_strg_logread2[16] = terminal_data_log[2]+CHAR_TO_INT;
-	g_vt100_strg_logread2[17] = terminal_data_log[3]+CHAR_TO_INT;
-	g_vt100_strg_logread2[30] = terminal_data_log[4]+CHAR_TO_INT;
-	g_vt100_strg_logread2[31] = terminal_data_log[5]+CHAR_TO_INT;
-	g_vt100_strg_logread2[33] = terminal_data_log[6]+CHAR_TO_INT;
-	g_vt100_strg_logread2[34] = terminal_data_log[7]+CHAR_TO_INT;
-	g_vt100_strg_logread2[38] = terminal_data_log[8]+CHAR_TO_INT;
-	g_vt100_strg_logread2[39] = terminal_data_log[9]+CHAR_TO_INT;
-	g_vt100_strg_logread2[41] = terminal_data_log[10]+CHAR_TO_INT;
-	g_vt100_strg_logread2[42] = terminal_data_log[11]+CHAR_TO_INT;
-	g_vt100_strg_logread2[44] = terminal_data_log[12]+CHAR_TO_INT;
-	g_vt100_strg_logread2[45] = terminal_data_log[13]+CHAR_TO_INT;
-	g_vt100_strg_logread2[51] = terminal_data_log[14]+CHAR_TO_INT;
-	g_vt100_strg_logread2[52] = terminal_data_log[15]+CHAR_TO_INT;
-	g_vt100_strg_logread2[54] = terminal_data_log[16]+CHAR_TO_INT;
-	g_vt100_strg_logread2[55] = terminal_data_log[17]+CHAR_TO_INT;
-	g_vt100_strg_logread2[59] = terminal_data_log[18]+CHAR_TO_INT;
-	g_vt100_strg_logread2[60] = terminal_data_log[19]+CHAR_TO_INT;
+	g_vt100_strg_logread2[11] = terminal_data_log[0]+CHAR_TO_INT;
+	g_vt100_strg_logread2[12] = terminal_data_log[1]+CHAR_TO_INT;
+	g_vt100_strg_logread2[14] = terminal_data_log[2]+CHAR_TO_INT;
+	g_vt100_strg_logread2[15] = terminal_data_log[3]+CHAR_TO_INT;
+	g_vt100_strg_logread2[27] = terminal_data_log[4]+CHAR_TO_INT;
+	g_vt100_strg_logread2[28] = terminal_data_log[5]+CHAR_TO_INT;
+	g_vt100_strg_logread2[30] = terminal_data_log[6]+CHAR_TO_INT;
+	g_vt100_strg_logread2[31] = terminal_data_log[7]+CHAR_TO_INT;
+	g_vt100_strg_logread2[33] = terminal_data_log[8]+CHAR_TO_INT;
+	g_vt100_strg_logread2[34] = terminal_data_log[9]+CHAR_TO_INT;
+	g_vt100_strg_logread2[44] = terminal_data_log[10]+CHAR_TO_INT;
+	g_vt100_strg_logread2[45] = terminal_data_log[11]+CHAR_TO_INT;
+	g_vt100_strg_logread2[47] = terminal_data_log[12]+CHAR_TO_INT;
+	g_vt100_strg_logread2[48] = terminal_data_log[13]+CHAR_TO_INT;
+	g_vt100_strg_logread2[52] = terminal_data_log[14]+CHAR_TO_INT;
+	g_vt100_strg_logread2[53] = terminal_data_log[15]+CHAR_TO_INT;
 
 	UART_WriteBlocking(uart, g_vt100_hide_cursor, sizeof(g_vt100_hide_cursor) / sizeof(g_vt100_hide_cursor[0]));
 	UART_WriteBlocking(uart, g_vt100_xy_jump1, sizeof(g_vt100_xy_jump1) / sizeof(g_vt100_xy_jump1[0]));

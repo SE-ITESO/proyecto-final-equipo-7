@@ -116,6 +116,7 @@ uint8_t* LOGGER_get_data(uint8_t log)
 
 void LOGGER_write_caps(uint8_t log, uint8_t caps)
 {
+	uint8_t captures[1];
     switch (log) {
         case LOG_1:
         	eeprom.subaddress = LOG_1_ADD_CAP;
@@ -135,8 +136,9 @@ void LOGGER_write_caps(uint8_t log, uint8_t caps)
         default:
             break;
     }
+    captures[0]=caps;
     LOGGER_set_device();
-    eeprom.data[0] = caps;
+    eeprom.data = captures;
     eeprom.dataSize = 1;
     I2C_write(eeprom);
 

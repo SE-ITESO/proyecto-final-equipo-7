@@ -9,6 +9,8 @@
 #include "CONFIG.h"
 #include "I2C.h"
 
+#define INA_CONFIG 0|0x0000 |0x0700|0x0078|0x07
+
 uint8_t g_ina219_curr[2];
 
 I2C_Device_t ina;
@@ -24,13 +26,13 @@ void INA219_set_device()
 
 void INA219_config()
 {
-	uint32_t config=0|0x0000 |0x0700|0x0078|0x07;
+	uint32_t config = INA_CONFIG;
 	uint8_t configBytes[2];
-	configBytes[0] = (config >> 8) & 0xFF;
-	configBytes[1] = config & 0xFF;
+	configBytes[0] = (config >> 8) & CONFIG_MASK;
+	configBytes[1] = config & CONFIG_MASK;
 
 	ina.address = INA219_ADDRESS;
-	ina.subaddress = 0x00;
+	ina.subaddress = INA219_CONFIG_SUBADDRESS;
 	ina.subaddressSize = 1;
 	ina.data = configBytes;
 	ina.dataSize = 2;
@@ -40,11 +42,11 @@ void INA219_calib()
 {
 	uint32_t calibrationValue=8192;
 	uint8_t calibrationBytes[2];
-	calibrationBytes[0] = (calibrationValue >> 8) & 0xFF;
-	calibrationBytes[1] = calibrationValue & 0xFF;
+	calibrationBytes[0] = (calibrationValue >> 8) & CONFIG_MASK;
+	calibrationBytes[1] = calibrationValue & CONFIG_MASK;
 
 	ina.address = INA219_ADDRESS;
-	ina.subaddress = 0x05;
+	ina.subaddress = INA219_CALIB_SUBADDRESS;
 	ina.subaddressSize = 1;
 	ina.data = calibrationBytes;
 	ina.dataSize = 2;

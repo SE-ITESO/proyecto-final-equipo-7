@@ -11,6 +11,18 @@
 #include "FTM.h"
 
 #define TOL 20
+#define MOTOR_VER_ORIGIN	130
+#define MOTOR_HOR_ORIGIN	162
+#define MOTOR_VER_MAX		214
+#define MOTOR_VER_MIN		110
+#define MOTOR_HOR_MAX		210
+#define MOTOR_HOR_MIN		50
+#define LDR_MAX_MAP			100
+#define LDR_LEFT_MAP_MIN	4
+#define LDR_RIGHT_MAP_MIN	2789
+#define LDR_LEFT_MAP_DELTA	4019
+#define LDR_RIGHTU_MAP_DELTA	1082
+#define LDR_RIGHTD_MAP_DELTA	1216
 
 uint16_t ldr_lu;
 uint16_t ldr_ld;
@@ -25,8 +37,8 @@ uint16_t ldr_right;
 int16_t ldr_delta_ver;
 int16_t ldr_delta_hor;
 
-uint8_t motor_ver = 130;
-uint8_t motor_hor = 162;
+uint8_t motor_ver = MOTOR_VER_ORIGIN;
+uint8_t motor_hor = MOTOR_HOR_ORIGIN;
 
 uint8_t tracker_flag = 0;
 
@@ -35,11 +47,11 @@ uint8_t TRACKER_check_tol(int16_t delta)
 	if(((-1*TOL)>delta) || (delta>TOL) )
 		//if( (delta>TOL) )
 	{
-		return 1;
+		return TRUE;
 	}
 	else
 	{
-		return 0;
+		return FALSE;
 	}
 }
 
@@ -51,18 +63,18 @@ void TRACKER_flag_on()
 void TRACKER_handler()
 {
 
-	if(1==tracker_flag)
+	if(TRUE==tracker_flag)
 	{
 		tracker_flag = 0;
-		ldr_lu = LDR_read(LDR_LU);	//4	4023
-		ldr_ld = LDR_read(LDR_LD);	//4	3995
-		ldr_ru = LDR_read(LDR_RU);	//2789	3871
-		ldr_rd = LDR_read(LDR_RD);	//2789	4005
+		ldr_lu = LDR_read(LDR_LU);
+		ldr_ld = LDR_read(LDR_LD);
+		ldr_ru = LDR_read(LDR_RU);
+		ldr_rd = LDR_read(LDR_RD);
 
-		ldr_lu = ((ldr_lu-4)*100)/4019;
-		ldr_ld = ((ldr_ld-4)*100)/4019;
-		ldr_ru = (((ldr_ru-2789)*100)/1082);
-		ldr_rd = ((ldr_rd-2789)*100)/1216;
+		ldr_lu = ((ldr_lu-LDR_LEFT_MAP_MIN)*LDR_MAX_MAP)/LDR_LEFT_MAP_DELTA;
+		ldr_ld = ((ldr_ld-LDR_LEFT_MAP_MIN)*LDR_MAX_MAP)/LDR_LEFT_MAP_DELTA;
+		ldr_ru = (((ldr_ru-LDR_RIGHT_MAP_MIN)*LDR_MAX_MAP)/LDR_RIGHTU_MAP_DELTA);
+		ldr_rd = ((ldr_rd-LDR_RIGHT_MAP_MIN)*LDR_MAX_MAP)/LDR_RIGHTD_MAP_DELTA;
 
 		ldr_up = ldr_lu + ldr_ru;
 		ldr_down = ldr_ld + ldr_rd;
@@ -85,15 +97,15 @@ void TRACKER_handler()
 
 
 
-			if(motor_ver > 214)
+			if(motor_ver > MOTOR_VER_MAX)
 			{
-				motor_ver = 214;
+				motor_ver = MOTOR_VER_MAX;
 			}
-			if(motor_ver < 110)
+			if(motor_ver < MOTOR_VER_MIN)
 			{
-				motor_ver = 110;
+				motor_ver = MOTOR_VER_MIN;
 			}
-			FTM_set_PWM(FTM0, 1, motor_ver);
+			FTM_set_PWM(FTM0, FTM_CHANNEL_1, motor_ver);
 		}
 
 		if(TRACKER_check_tol(ldr_delta_hor))
@@ -106,15 +118,15 @@ void TRACKER_handler()
 			{
 				motor_hor += 1;
 			}
-			if(motor_hor > 210)
+			if(motor_hor > MOTOR_HOR_MAX)
 			{
-				motor_hor = 210;
+				motor_hor = MOTOR_HOR_MAX;
 			}
-			if(motor_hor < 50)
+			if(motor_hor < MOTOR_HOR_MIN)
 			{
-				motor_hor = 50;
+				motor_hor = MOTOR_HOR_MIN;
 			}
-			FTM_set_PWM(FTM0, 0, motor_hor);
+			FTM_set_PWM(FTM0, FTM_CHANNEL_0, motor_hor);
 		}
 	}
 

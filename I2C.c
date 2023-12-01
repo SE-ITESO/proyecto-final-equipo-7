@@ -51,15 +51,16 @@ uint8_t I2C_get_transfer_success_flag()
 void I2C_write(I2C_Device_t device)
 {
 
-	for (uint8_t i = 0; i<device.dataSize; i++)
-	{
-		g_master_txBuff[0] = device.data[i];
+		g_master_txBuff[0] = device.data[0];
+		g_master_txBuff[1] = device.data[1];
+		g_master_txBuff[2] = device.data[2];
+
 		masterXfer.slaveAddress   = device.address;
 		masterXfer.direction      = kI2C_Write;
-		masterXfer.subaddress     = device.subaddress+i;
+		masterXfer.subaddress     = device.subaddress;
 		masterXfer.subaddressSize = device.subaddressSize;
 		masterXfer.data           = g_master_txBuff;
-		masterXfer.dataSize       = 1;
+		masterXfer.dataSize       = device.dataSize;
 		masterXfer.flags          = kI2C_TransferDefaultFlag;
 
 		I2C_MasterTransferBlocking(I2C1, &masterXfer);
@@ -68,29 +69,27 @@ void I2C_write(I2C_Device_t device)
 		} else {
 			g_transfer_success_flag=false;
 		}
-	}
+
 }
 
 void I2C_read(I2C_Device_t device)
 {
 
-	for (uint8_t i = 0; i<device.dataSize; i++)
-	{
 		masterXfer.slaveAddress   = device.address;
 		masterXfer.direction      = kI2C_Read;
-		masterXfer.subaddress     = device.subaddress-1+i;
+		masterXfer.subaddress     = device.subaddress;
 		masterXfer.subaddressSize = device.subaddressSize;
 		masterXfer.data           = g_master_rxBuff;
-		masterXfer.dataSize       = 1;
+		masterXfer.dataSize       = device.dataSize;
 		masterXfer.flags          = kI2C_TransferDefaultFlag;
 
 		I2C_MasterTransferBlocking(I2C1, &masterXfer);
+		device.data[0] = g_master_rxBuff[0];
+		device.data[1] = g_master_rxBuff[1];
+		device.data[2] = g_master_rxBuff[2];
 		if (I2C_MasterTransferBlocking(I2C1, &masterXfer) == kStatus_Success) {
 			g_transfer_success_flag=true;
 		} else {
 			g_transfer_success_flag=false;
 		}
-
-		device.data[i] = g_master_rxBuff[0];
-	}
 }

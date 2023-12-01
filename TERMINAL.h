@@ -50,7 +50,7 @@ uint8_t* TERMINAL_get_data_log(uint8_t log);
 void TERMINAL_show_data_log(uint8_t log, UART_Type *uart);
 void TERMINAL_show_data_log_jump(UART_Type *uart);
 void TERMINAL_set_log_num(uint8_t log);
-
+void TERMINAL_change_current(UART_Type *uart);
 void TERMINAL_show_error_wdt(UART_Type *uart);
 void TERMINAL_show_error_i2c(UART_Type *uart);
 

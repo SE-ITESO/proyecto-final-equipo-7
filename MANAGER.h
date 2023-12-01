@@ -21,6 +21,9 @@ void MANAGER_handler_log();
 void MANAGER_LOGGER_to_TERMINAL(uint8_t log, UART_Type *uart);
 void MANAGER_data_update_seconds_lcd();
 void MANAGER_RTC_to_LCD();
+void MANAGER_update_current_terminal();
+void MANAGER_update_current_terminal1_flag();
+void MANAGER_update_current_terminal1_flag_off();
 
 
 #endif /* MANAGER_H_ */

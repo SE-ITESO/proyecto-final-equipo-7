@@ -21,9 +21,11 @@
 #include "RTC.h"
 #include "LOGGER.h"
 #include "LCD_nokia.h"
+#include "INA219.h"
 
 uint8_t g_handler_flag=0;
 uint8_t g_handler_terminal1_flag=0;
+uint8_t g_handler_terminalcurrent1_flag=0;
 uint8_t g_handler_terminal2_flag=0;
 
 void MANAGER_RTC_to_TERMINAL_time(){
@@ -100,7 +102,10 @@ void MANAGER_INA_to_TERMINAL_curr()
 	uint8_t* terminal_curr = TERMINAL_get_curr();
 	uint8_t* ina_curr = INA219_get_curr();
 
-
+	terminal_curr[0] = (ina_curr[0]/10);
+	terminal_curr[1] = (ina_curr[0]%10);
+	terminal_curr[2] = (ina_curr[1]/10);
+	terminal_curr[3] = (ina_curr[1]%10);
 }
 
 void MANAGER_update_seconds_terminal()
@@ -117,6 +122,26 @@ void MANAGER_update_seconds_terminal()
 		TERMINAL_change_seconds(TERMINAL_2);
 	}
 }
+
+void MANAGER_update_current_terminal()
+{
+	if(g_handler_terminalcurrent1_flag){
+		MANAGER_INA_to_TERMINAL_curr();
+		TERMINAL_update_curr();
+		TERMINAL_change_seconds(TERMINAL_1);
+	}
+}
+
+void MANAGER_update_current_terminal1_flag(){
+	g_handler_terminalcurrent1_flag=1;
+}
+
+void MANAGER_update_current_terminal1_flag_off()
+{
+	g_handler_terminalcurrent1_flag=0;
+}
+
+
 void MANAGER_update_seconds_terminal1_flag(){
 	g_handler_terminal1_flag=1;
 }
@@ -211,16 +236,16 @@ void MANAGER_RTC_to_LCD() {
 
 
     LCD_nokia_goto_xy(2, 1);
-    LCD_nokia_send_char(formattedDate[0] + '0');
-    LCD_nokia_send_char(formattedDate[1] + '0');
+    LCD_nokia_send_char(formattedDate[0] + CHAR_TO_INT);
+    LCD_nokia_send_char(formattedDate[1] + CHAR_TO_INT);
     LCD_nokia_send_char('/');
-    LCD_nokia_send_char(formattedDate[2] + '0');
-    LCD_nokia_send_char(formattedDate[3] + '0');
+    LCD_nokia_send_char(formattedDate[2] + CHAR_TO_INT);
+    LCD_nokia_send_char(formattedDate[3] + CHAR_TO_INT);
     LCD_nokia_send_char('/');
     LCD_nokia_send_char('2');
     LCD_nokia_send_char('0');
-    LCD_nokia_send_char(formattedDate[4] + '0');
-    LCD_nokia_send_char(formattedDate[5] + '0');
+    LCD_nokia_send_char(formattedDate[4] + CHAR_TO_INT);
+    LCD_nokia_send_char(formattedDate[5] + CHAR_TO_INT);
 
     uint8_t formattedTime[6];
 
@@ -240,14 +265,27 @@ void MANAGER_RTC_to_LCD() {
 
 
 	LCD_nokia_goto_xy(2, 2);
-	LCD_nokia_send_char(formattedTime[0] + '0');
-	LCD_nokia_send_char(formattedTime[1] + '0');
+	LCD_nokia_send_char(formattedTime[0] + CHAR_TO_INT);
+	LCD_nokia_send_char(formattedTime[1] + CHAR_TO_INT);
 	LCD_nokia_send_char(':');
-	LCD_nokia_send_char(formattedTime[2] + '0');
-	LCD_nokia_send_char(formattedTime[3] + '0');
+	LCD_nokia_send_char(formattedTime[2] + CHAR_TO_INT);
+	LCD_nokia_send_char(formattedTime[3] + CHAR_TO_INT);
 	LCD_nokia_send_char(':');
-	LCD_nokia_send_char(formattedTime[4] + '0');
-	LCD_nokia_send_char(formattedTime[5] + '0');
+	LCD_nokia_send_char(formattedTime[4] + CHAR_TO_INT);
+	LCD_nokia_send_char(formattedTime[5] + CHAR_TO_INT);
+
+	uint8_t formattedCurr[4];
+	uint8_t* ina_rx_curr = INA219_get_curr();
+	formattedCurr[0] = (ina_rx_curr[0]/10);       // Tens of Hours
+	formattedCurr[1] = ina_rx_curr[0]%10;                // Units of Hours
+	formattedCurr[2] = (ina_rx_curr[1]/10);     // Tens of Minutes
+	formattedCurr[3] = ina_rx_curr[1]%10;              // Units of Minutes
+	LCD_nokia_goto_xy(2, 4);
+	LCD_nokia_send_char(formattedCurr[0] + CHAR_TO_INT);
+	LCD_nokia_send_char(formattedCurr[1] + CHAR_TO_INT);
+	LCD_nokia_send_char('.');
+	LCD_nokia_send_char(formattedCurr[2] + CHAR_TO_INT);
+	LCD_nokia_send_char(formattedCurr[3] + CHAR_TO_INT);
 }
 
 void MANAGER_data_update_seconds_lcd()
@@ -260,9 +298,13 @@ void MANAGER_handler_log()
 
 		g_handler_flag=0;
 		RTC_read_time();
-		MANAGER_update_seconds_terminal();
-		MANAGER_data_update_seconds_lcd();
 		RTC_read_date();
+		INA219_read_curr();
+		MANAGER_update_seconds_terminal();
+		MANAGER_update_current_terminal();
+		LCD_nokia_show_data();
+		MANAGER_data_update_seconds_lcd();
+
 
 		if(dataLog1.flag){
 			if(dataLog1.time == dataLog1.time_count){
@@ -339,7 +381,6 @@ void MANAGER_handler_log()
 void MANAGER_LOGGER_to_TERMINAL(uint8_t log, UART_Type *uart)
 {
 	uint8_t caps;
-	uint64_t concatenatedValue = 0;
 	log -= CHAR_TO_INT;
 	switch(log)
 	{
@@ -400,11 +441,14 @@ void MANAGER_LOGGER_to_TERMINAL(uint8_t log, UART_Type *uart)
 		uint8_t* logger_data = LOGGER_get_data(log);
 		uint8_t* terminal_log = TERMINAL_get_data_log(log);
 
+		terminal_log[0] = (logger_data[0]/10);
+		terminal_log[1] = logger_data[0]%10;
+		terminal_log[2] = (logger_data[1]/10);
+		terminal_log[3] = logger_data[1]%10;
 
-
-	    uint8_t seconds = logger_data[4];
-	    uint8_t minutes = logger_data[5];
-	    uint8_t hours = logger_data[6];
+	    uint8_t seconds = logger_data[2];
+	    uint8_t minutes = logger_data[3];
+	    uint8_t hours = logger_data[4];
 
 	    terminal_log[4]  = (hours >> 4) & UNITS_MASK;
 	    terminal_log[5]  = hours & UNITS_MASK;
@@ -413,9 +457,9 @@ void MANAGER_LOGGER_to_TERMINAL(uint8_t log, UART_Type *uart)
 	    terminal_log[8] = (seconds >> 4) & UNITS_MASK;
 	    terminal_log[9] = seconds & UNITS_MASK;
 
-	    uint16_t year =  logger_data[11];
-	    uint8_t month = logger_data[10];
-	    uint8_t day = logger_data[9];
+	    uint16_t year =  logger_data[7];
+	    uint8_t month = logger_data[6];
+	    uint8_t day = logger_data[5];
 
 	    terminal_log[10] = (day >> 4) & UNITS_MASK;
 	    terminal_log[11] = day & UNITS_MASK;

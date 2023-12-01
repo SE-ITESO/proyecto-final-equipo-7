@@ -385,7 +385,7 @@ void SM_state_machine()
 		if (ESC_KEY == TERMINAL2_input)
 		{
 			MANAGER_update_seconds_terminal2_flag_off();
-			TERMINAL_show_options(TERMINAL_1);
+			TERMINAL_show_options(TERMINAL_2);
 			TERMINAL2_flags.options = true;
 			TERMINAL2_flags.config = false;
 			TERMINAL2_flags.set_time = false;
@@ -408,7 +408,7 @@ void SM_state_machine()
 			log2_caps[1]=0;
 		}
 
-		flagSwitch = TERMINAL2_flags.options | (TERMINAL2_flags.config << 2)
+		flagSwitch = TERMINAL2_flags.options | (TERMINAL2_flags.config << 1)
 				| (TERMINAL2_flags.set_time << 2) | (TERMINAL2_flags.set_date << 3) | (TERMINAL2_flags.log << 4)
 				| (TERMINAL2_flags.set_log << 5) | (TERMINAL2_flags.read_log << 6);
 
@@ -452,7 +452,7 @@ void SM_state_machine()
 						break;
 
 					case SET_DATE:
-						if(TERMINAL2_flags.date == true){
+						if(TERMINAL1_flags.date == true){
 							TERMINAL_msg_busy(TERMINAL_2);
 						}else
 						{
@@ -481,7 +481,7 @@ void SM_state_machine()
 						break;
 
 					case READ_DATE:
-						if(TERMINAL2_flags.read_date == true){
+						if(TERMINAL1_flags.read_date == true){
 							TERMINAL_msg_busy(TERMINAL_2);
 						}else
 						{
@@ -496,7 +496,7 @@ void SM_state_machine()
 						break;
 
 					case READ_CURR:
-						if(TERMINAL2_flags.read_curr == true){
+						if(TERMINAL1_flags.read_curr == true){
 							TERMINAL_msg_busy(TERMINAL_2);
 						}else
 						{
@@ -518,7 +518,7 @@ void SM_state_machine()
 				switch(TERMINAL2_input)
 				{
 					case SET_LOG:
-						if(TERMINAL2_flags.set_log == true){
+						if(TERMINAL1_flags.set_log == true){
 							TERMINAL_msg_busy(TERMINAL_2);
 						}else
 						{
@@ -529,7 +529,7 @@ void SM_state_machine()
 						break;
 
 					case READ_LOG:
-						if(TERMINAL2_flags.read_log == true){
+						if(TERMINAL1_flags.read_log == true){
 							TERMINAL_msg_busy(TERMINAL_2);
 						}else{
 							TERMINAL_show_read_log(TERMINAL_2);
@@ -549,7 +549,7 @@ void SM_state_machine()
 					if((ENTER_KEY == TERMINAL2_input) && (time2_input_position == TIME_FORMAT_LENGTH))
 					{
 						MANAGER_TERMINAL_to_RTC_time();
-						RTC_write_date();
+						RTC_write_time();
 						TERMINAL_msg_set_time(TERMINAL_2);
 					}
 					else if (time2_input_position < TIME_FORMAT_LENGTH)

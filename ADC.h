@@ -1,8 +1,12 @@
 /*
- * ADC.h
+ * @file 	ADC.h
  *
- *  Created on: 26 nov. 2023
- *      Author: HP}
+ * @Authors Diego Delgado
+ * 			Alberto Quintana
+ *
+ * @brief  	This file initializes ADC, which will allow us to read values from LDR'S
+ *
+ *
  */
 
 #ifndef ADC_H_

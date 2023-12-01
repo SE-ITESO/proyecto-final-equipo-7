@@ -1,8 +1,13 @@
 /*
- * INA219.h
+ * @file 	INA219.c
  *
- *  Created on: 24 nov. 2023
- *      Author: HP}
+ * @Authors Diego Delgado
+ * 			Alberto Quintana
+ *
+ * @brief  This file allows us to configure and calibrate our I2C current sensor.
+ * 		   In our case we use a small range since our panel provides a maximum of 160mA.
+ *
+ *
  */
 
 #ifndef INA219_H_

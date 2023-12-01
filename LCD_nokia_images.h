@@ -1,9 +1,14 @@
 /*
- * LCD_nokia_images.h
+ * @file 	LCD_nokia_images.h
  *
- *  Created on: 25/09/2018
- *      Author: jlpe
+ * @Authors Diego Delgado
+ * 			Alberto Quintana
+ *
+ * @brief 	This file provides basic functions to control and display messages on nokia 5110 display
+ *
+ *
  */
+
 
 #ifndef LCD_NOKIA_IMAGES_H_
 #define LCD_NOKIA_IMAGES_H_

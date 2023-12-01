@@ -1,9 +1,14 @@
 /*
- * LDR.h
+ * @file 	LDR.h
  *
- *  Created on: 26 nov. 2023
- *      Author: HP}
+ * @Authors Diego Delgado
+ * 			Alberto Quintana
+ *
+ * @brief 	This file allows us to configure 4 ADC's to allow us to obtain values from each of the LDR's individually.
+ *
+ *
  */
+
 
 #ifndef LDR_H_
 #define LDR_H_

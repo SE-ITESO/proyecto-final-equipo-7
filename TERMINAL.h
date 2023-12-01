@@ -1,8 +1,12 @@
 /*
- * TERMINAL.h
+ * @file 	TERMINAL.c
  *
- *  Created on: 20 nov. 2023
- *      Author: HP}
+ * @Authors Diego Delgado
+ * 			Alberto Quintana
+ *
+ * @brief 	This file helps us define the messages to be shown on the UART terminal. We also define parameters such as colors, cursor position, etc.
+ *
+ *
  */
 
 #ifndef TERMINAL_H_

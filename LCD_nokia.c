@@ -1,3 +1,17 @@
+/*
+ * @file 	LCD_nokia.c
+ *
+ * @Authors Diego Delgado
+ * 			Alberto Quintana
+ *
+ * @brief 	This file provides BITMAP of welcome image
+ *
+ *
+ */
+
+
+
+
 #include "fsl_gpio.h"
 #include "fsl_port.h"
 #include "SPI.h"

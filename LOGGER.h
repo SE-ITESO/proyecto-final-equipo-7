@@ -1,9 +1,15 @@
 /*
- * LOGGER.h
+ * @file 	LOGGER.h
  *
- *  Created on: 20 nov. 2023
- *      Author: HP}
+ * @Authors Diego Delgado
+ * 			Alberto Quintana
+ *
+ * @brief   File allows us to write data from current, date and time using the UART terminal.
+ * 			We have option to write to 5 different logs with a max of 50 captures.
+ *
+ *
  */
+
 
 #ifndef LOGGER_H_
 #define LOGGER_H_

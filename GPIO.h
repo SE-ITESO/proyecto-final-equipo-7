@@ -1,5 +1,5 @@
 /*
-*   @file GPIO.c
+*   @file GPIO.h
 *
 *	@brief
 *		This is the source file for the GPIO device driver for Kinetis K64.

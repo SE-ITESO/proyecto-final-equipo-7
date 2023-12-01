@@ -1,8 +1,12 @@
 /*
- * SM.h
+ * @file 	SM.h
  *
- *  Created on: 20 nov. 2023
- *      Author: HP}
+ * @Authors Diego Delgado
+ * 			Alberto Quintana
+ *
+ * @brief 	State machine with different "levels". Checks current state to execute certain task.
+ *
+ *
  */
 
 #ifndef SM_H_

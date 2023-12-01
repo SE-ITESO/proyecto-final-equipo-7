@@ -1,3 +1,17 @@
+
+/*
+ * @file    PIT.h
+ *
+ * @Authors	Diego Delgado
+ * 			Alberto Quintana
+ *
+ * @brief   This file initializes desired PIT with
+ * corresponding timer periods in microseconds. Once pit timer overflows,
+ * a callback occurs.
+ *
+ *
+ */
+
 #ifndef PIT_H_
 #define PIT_H_
 

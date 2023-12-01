@@ -1,9 +1,15 @@
 /*
- * LOGGER.c
+ * @file 	LOGGER.c
  *
- *  Created on: 20 nov. 2023
- *      Author: HP}
+ * @Authors Diego Delgado
+ * 			Alberto Quintana
+ *
+ * @brief   File allows us to write data from current, date and time using the UART terminal.
+ * 			We have option to write to 5 different logs with a max of 50 captures.
+ *
+ *
  */
+
 
 #include "LOGGER.h"
 #include "CONFIG.h"
@@ -20,6 +26,8 @@ uint8_t g_logger_data_5[EEPROM_FORMAT_LENGHT] = {0,0,0,0,0,0,0,0};
 
 I2C_Device_t eeprom;
 
+
+//EEPROM slave address
 void LOGGER_set_device()
 {
 	eeprom.address = EEPROM_ADDRESS;
@@ -27,6 +35,8 @@ void LOGGER_set_device()
 	eeprom.dataSize = EEPROM_FORMAT_LENGHT;
 }
 
+
+//Data to be written on logger
 void LOGGER_write_data(uint8_t log, uint8_t cap){
 
     switch (log) {
@@ -66,6 +76,8 @@ void LOGGER_write_data(uint8_t log, uint8_t cap){
 	I2C_write(eeprom);
 }
 
+//Read the data saved on one of the five logs
+
 void LOGGER_read_data(uint8_t log, uint8_t cap)
 {
 	switch (log) {
@@ -96,6 +108,8 @@ void LOGGER_read_data(uint8_t log, uint8_t cap)
     I2C_read(eeprom);
 }
 
+
+
 uint8_t* LOGGER_get_data(uint8_t log)
 {
     switch (log) {
@@ -113,6 +127,8 @@ uint8_t* LOGGER_get_data(uint8_t log)
             return 0;
     }
 }
+
+//Determines which log to be used and how many captures will be introduced.
 
 void LOGGER_write_caps(uint8_t log, uint8_t caps)
 {
@@ -144,6 +160,8 @@ void LOGGER_write_caps(uint8_t log, uint8_t caps)
 
 }
 
+
+//Reads the amount of captures that are introduced on terminal.
 uint8_t LOGGER_read_caps(uint8_t log)
 {
 	uint8_t savedCaps[1];

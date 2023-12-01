@@ -1,3 +1,15 @@
+/*
+ * @file 	LCD_nokia.h
+ *
+ * @Authors Diego Delgado
+ * 			Alberto Quintana
+ *
+ * @brief 	This file provides BITMAP of welcome image
+ *
+ *
+ */
+
+
 #ifndef LCD_NOKIA_H_
 #define LCD_NOKIA_H_
 

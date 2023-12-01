@@ -1,4 +1,22 @@
 
+
+/*
+ * MANAGER.h
+ *
+ * 	Created on: 13/10/2023
+ * 		Author: Diego Delgado, Alberto Quintana
+ *
+ *  @brief
+ *  This is the source file for the MANAGER module.
+ *  It contains the implementation of functions for managing data between I2C and UART modules.
+ *
+ *  @details
+ *  The MANAGER module orchestrates the communication between I2C and UART modules to read and update time values.
+ *  It provides functions for converting data between I2C and UART formats and updating time values.
+ *
+ */
+
+
 #ifndef MANAGER_H_
 #define MANAGER_H_
 

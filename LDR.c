@@ -1,9 +1,14 @@
 /*
- * LDR.c
+ * @file 	LDR.c
  *
- *  Created on: 26 nov. 2023
- *      Author: HP}
+ * @Authors Diego Delgado
+ * 			Alberto Quintana
+ *
+ * @brief 	This file allows us to configure 4 ADC's to allow us to obtain values from each of the LDR's individually.
+ *
+ *
  */
+
 
 #include "LDR.h"
 #include "CONFIG.h"
@@ -12,6 +17,8 @@
 #include "fsl_port.h"
 #include "fsl_gpio.h"
 #include "fsl_adc16.h"
+
+// Sets the adc's that will be used for the LDR's
 
 void LDR_config()
 {

@@ -1,8 +1,12 @@
 /*
- * TRACKER.h
+ * @file 	TRACKER.h
  *
- *  Created on: 29 nov. 2023
- *      Author: HP}
+ * @Authors Diego Delgado
+ * 			Alberto Quintana
+ *
+ * @brief 	This file allows us to move the servo motors either vertically or horizontally.
+ *
+ *
  */
 
 #ifndef TRACKER_H_

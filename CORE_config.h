@@ -1,9 +1,14 @@
 /*
- * CORE_config.h
+ * @file 	CORE_config.h
  *
- *  Created on: 3 nov. 2023
- *      Author: HP}
+ * @Authors Diego Delgado
+ * 			Alberto Quintana
+ *
+ * @brief   This file sets the desired clock rate.
+ *
+ *
  */
+
 
 #ifndef CORE_CONFIG_H_
 #define CORE_CONFIG_H_

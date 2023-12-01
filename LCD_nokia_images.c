@@ -1,3 +1,16 @@
+/*
+ * @file 	LCD_nokia_images.c
+ *
+ * @Authors Diego Delgado
+ * 			Alberto Quintana
+ *
+ * @brief 	This file provides BITMAP of welcome image and watch dog error
+ *
+ *
+ */
+
+
+
 #include "LCD_nokia_images.h"
 
 const uint8_t ITESO[] = {

@@ -1,8 +1,12 @@
 /*
- * CONFIG.h
+ * @file    CONFIG.h
  *
- *  Created on: 21 oct. 2023
- *      Author: HP}
+ * @Authors Diego Delgado
+ * 			Alberto Quintana
+ *
+ * @brief   This file defines our macros to prevent magic numbers.
+ *
+ *
  */
 
 #ifndef CONFIG_H_

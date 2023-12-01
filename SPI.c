@@ -1,3 +1,13 @@
+/*
+ * @file 	SPI.c
+ *
+ * @Authors Diego Delgado
+ * 			Alberto Quintana
+ *
+ * @brief 	This file provides basic SPI configuration with the desired parameters
+ *
+ *
+ */
 
 #include "SPI.h"
 #include "CONFIG.h"

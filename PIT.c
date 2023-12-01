@@ -1,3 +1,18 @@
+/*
+ * @file    PIT.c
+ *
+ * @Authors	Diego Delgado
+ * 			Alberto Quintana
+ *
+ * @brief   This file initializes desired PIT with
+ * corresponding timer periods in microseconds. Once pit timer overflows,
+ * a callback occurs.
+ *
+ *
+ */
+
+
+
 #include "PIT.h"
 #include "fsl_pit.h"
 

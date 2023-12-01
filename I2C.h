@@ -1,4 +1,18 @@
-
+/*
+ * I2C.h
+ *
+ * 	Created on: 13/10/2023
+ * 		Author: Diego Delgado, Alberto Quintana
+ *
+ *  @brief
+ *  This is the source file for the I2C device driver.
+ *  It contains the implementation of configuration functions and runtime functions for I2C communication.
+ *
+ *  @details
+ *  The I2C module is configured to communicate with an RTC DS1307 module to read and write time values.
+ *  It provides functions for configuring I2C, writing data, reading data, and obtaining the received time values.
+ *
+ */
 #ifndef I2C_H_
 #define I2C_H_
 

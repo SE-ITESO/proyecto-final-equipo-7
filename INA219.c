@@ -1,8 +1,13 @@
 /*
- * INA219.c
+ * @file 	INA219.c
  *
- *  Created on: 24 nov. 2023
- *      Author: HP}
+ * @Authors Diego Delgado
+ * 			Alberto Quintana
+ *
+ * @brief  This file allows us to configure and calibrate our I2C current sensor.
+ * 		   In our case we use a small range since our panel provides a maximum of 160mA.
+ *
+ *
  */
 
 #include "INA219.h"
@@ -15,6 +20,8 @@ uint8_t g_ina219_curr[2];
 
 I2C_Device_t ina;
 
+
+//SETS INA slave address
 void INA219_set_device()
 {
 	ina.address = INA219_ADDRESS;
@@ -23,6 +30,8 @@ void INA219_set_device()
 	ina.data = g_ina219_curr;
 	ina.dataSize = CURR_FORMAT_LENGHT;
 }
+
+//CONFIGURATION
 
 void INA219_config()
 {
@@ -38,6 +47,8 @@ void INA219_config()
 	ina.dataSize = 2;
 	I2C_write(ina);
 }
+
+//INA calibration value, determines our current range that will be used.
 void INA219_calib()
 {
 	uint32_t calibrationValue=8192;

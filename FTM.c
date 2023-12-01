@@ -1,9 +1,15 @@
 /*
- * FTM.c
+ * @file 	FTM.c
  *
- *  Created on: 24 nov. 2023
- *      Author: HP}
+ * @Authors Diego Delgado
+ * 			Alberto Quintana
+ *
+ * @brief  	This file initializes FTM for PWM use. PWM will allow us to move servos, using edge-alined PWM.
+ *
+ *
  */
+
+//
 
 #include "FTM.h"
 #include "CONFIG.h"

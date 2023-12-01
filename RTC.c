@@ -17,6 +17,8 @@ uint8_t g_rtc_date[3] = {0,0,0};
 uint8_t g_rtc_config[1] = {0};
 I2C_Device_t rtc;
 
+
+//1Hz signal for our time base
 void RTC_set_device_squarewave()
 {
 	g_rtc_config[0] = SQUAREWAVE_FREQ_MASK;
@@ -27,6 +29,8 @@ void RTC_set_device_squarewave()
 	rtc.dataSize = 1;
 }
 
+//To write time
+
 void RTC_set_device_time()
 {
 	rtc.address = RTC_ADDRESS;
@@ -36,6 +40,8 @@ void RTC_set_device_time()
 	rtc.dataSize = 3;
 }
 
+
+//To write date
 void RTC_set_device_date()
 {
 	rtc.address = RTC_ADDRESS;
@@ -45,11 +51,16 @@ void RTC_set_device_date()
 	rtc.dataSize = 3;
 }
 
+//Enables 1HZ signal
+
 void RTC_set_squarewave(){
 
 	RTC_set_device_squarewave();
 	I2C_write(rtc);
 }
+
+
+//Configures the RTC
 
 void RTC_config()
 {

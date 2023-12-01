@@ -1,13 +1,14 @@
-/**
-	\file
-	\brief
-		This is the source file for the NVIC device driver for Kinetis K64.
-		It contains some configuration functions and runtime functions.
-		It is implemented using  CMSIS Core functions
-	\author J. Luis Pizano Escalante, luispizano@iteso.mx
-	\date	27/07/2015
-	\todo
-	    Pending interrupts and disable interrupts are not enable.
+/*
+ * *@file NVIC.c
+ *
+ * @Author J. Luis Pizano Escalante
+ * 			used and modified by Diego Delgado, Alberto Quintana
+ *
+ *
+ *	@brief
+ *		This is the source file for the NVIC device driver for Kinetis K64.
+ *		It contains some configuration functions and runtime functions.
+ *		It is implemented using  CMSIS Core functions
  */
 
 #include "NVIC.h"

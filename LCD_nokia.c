@@ -1,3 +1,17 @@
+/*
+ * @file 	LCD_nokia.c
+ *
+ * @Authors Diego Delgado
+ * 			Alberto Quintana
+ *
+ * @brief 	This file provides BITMAP of welcome image
+ *
+ *
+ */
+
+
+
+
 #include "fsl_gpio.h"
 #include "fsl_port.h"
 #include "SPI.h"
@@ -5,7 +19,6 @@
 #include "stdint.h"
 #include "fsl_dspi.h"
 #include "GPIO.h"
-#include "MEM.h"
 #include "CONFIG.h"
 #include "LCD_nokia_images.h"
 #include "UART.h"
@@ -118,17 +131,9 @@ static const uint8_t ASCII[][5] =
 ,{0x78, 0x46, 0x41, 0x46, 0x78} // 7f
 };
 
-uint8_t string_manual_option[]="1)Manual"; /*! String to be printed in the LCD*/
-uint8_t string_sequence_option[]="2)Sequence"; /*! String to be printed in the LCD*/
-uint8_t string_sequence_mode[]="Sequence";
-uint8_t string_sequence_stopped[]="Stopped";
-uint8_t string_sequence_playing[]="Playing";
-uint8_t string_manual_mode[]="Manual Mode";
-uint8_t string_manual_1[]="Press any";
-uint8_t string_manual_2[]="Key";
-
-uint8_t string_current[]="Corriente";
-
+uint8_t string_title[]="SolarTracker"; /*! String to be printed in the LCD*/
+uint8_t string_current1[]="Current:";
+uint8_t string_current2[]="0.00 mA";
 
 //uint8_t g_uart_rx_time[6] = {0,0,0,0,0,0};
 //agregado
@@ -168,25 +173,11 @@ void LCD_nokia_init(void)
 	LCD_nokia_write_byte(LCD_CMD, 0x0C); //Set display control, normal mode. 0x0D for inverse
 }
 
-void LCD_nokia_show_current(){
-	LCD_nokia_clear();
-	LCD_nokia_goto_xy(6,2);
-	LCD_nokia_send_string(string_current);
-
-}
-
-
-
-
-
-
-
 void LCD_nokia_clr_welcome_flag()
 {
 	g_welcome_flag =0;
-	LCD_nokia_show_menu();
+	LCD_nokia_show_data();
 	PIT_stop(PIT_CHANNEL_1);
-
 }
 
 uint8_t LCD_nokia_get_welcome_flag()
@@ -263,19 +254,21 @@ void LCD_nokia_delay(void)
 	}
 }
 
+void LCD_nokia_show_title()
+{
+	LCD_nokia_goto_xy(2,0);
+	LCD_nokia_send_string(string_title);
 
-////////////////////////////////////////////////////////////////////////////
-//Para mandar fecha a display
-//para mandar a  display
+}
+
 void LCD_nokia_show_date() {
     uint8_t formattedDate[6];
 
-    uint8_t* uart_rx_date = UART_get_rx_date();
-    	uint8_t* i2c_rx_date = I2C_get_rx_date();
+	uint8_t* i2c_rx_date = RTC_get_date();
 
-    	uint16_t year =  i2c_rx_date[I2C_YEAR_INDEX];
-    	    uint8_t month = i2c_rx_date[I2C_MONTH_INDEX];
-    	    uint8_t day = i2c_rx_date[I2C_DAY_INDEX];
+	uint16_t year =  i2c_rx_date[RTC_YEAR_INDEX];
+		uint8_t month = i2c_rx_date[RTC_MONTH_INDEX];
+		uint8_t day = i2c_rx_date[RTC_DAY_INDEX];
 
     formattedDate[0] = (day >> 4) & UNITS_MASK;       // Tens of Day
     formattedDate[1] = day & UNITS_MASK;              // Units of Day
@@ -284,29 +277,28 @@ void LCD_nokia_show_date() {
     formattedDate[4] = (year >> 4) & UNITS_MASK;      // Tens of Year
     formattedDate[5] = year & UNITS_MASK;             // Units of Year
 
-    LCD_nokia_clear();
-    LCD_nokia_goto_xy(2, 0);
-    LCD_nokia_send_char(formattedDate[0] + '0');
-    LCD_nokia_send_char(formattedDate[1] + '0');
+    LCD_nokia_goto_xy(2, 1);
+    LCD_nokia_send_char(formattedDate[0] + CHAR_TO_INT);
+    LCD_nokia_send_char(formattedDate[1] + CHAR_TO_INT);
     LCD_nokia_send_char('/');
-    LCD_nokia_send_char(formattedDate[2] + '0');
-    LCD_nokia_send_char(formattedDate[3] + '0');
+    LCD_nokia_send_char(formattedDate[2] + CHAR_TO_INT);
+    LCD_nokia_send_char(formattedDate[3] + CHAR_TO_INT);
     LCD_nokia_send_char('/');
     LCD_nokia_send_char('2');
     LCD_nokia_send_char('0');
-    LCD_nokia_send_char(formattedDate[4] + '0');
-    LCD_nokia_send_char(formattedDate[5] + '0');
+    LCD_nokia_send_char(formattedDate[4] + CHAR_TO_INT);
+    LCD_nokia_send_char(formattedDate[5] + CHAR_TO_INT);
 }
 
 
 void LCD_nokia_show_time() {
     uint8_t formattedTime[6];
 
-      uint8_t* i2c_rx_time = I2C_get_rx_time();
+    uint8_t* i2c_rx_time = RTC_get_time();
 
-            uint8_t seconds = i2c_rx_time[I2C_SECONDS_INDEX];
-             uint8_t minutes = i2c_rx_time[I2C_MINUTES_INDEX];
-             uint8_t hours = i2c_rx_time[I2C_HOURS_INDEX];
+	uint8_t seconds = i2c_rx_time[RTC_SECONDS_INDEX];
+	uint8_t minutes = i2c_rx_time[RTC_MINUTES_INDEX];
+	uint8_t hours = i2c_rx_time[RTC_HOURS_INDEX];
 
 
     formattedTime[0] = ((hours >> 4) & UNITS_MASK);       // Tens of Hours
@@ -317,48 +309,35 @@ void LCD_nokia_show_time() {
     formattedTime[5] = seconds & UNITS_MASK;              // Units of Seconds
 
 
-    LCD_nokia_goto_xy(2, 1);
-    LCD_nokia_send_char(formattedTime[0] + '0');
-    LCD_nokia_send_char(formattedTime[1] + '0');
+    LCD_nokia_goto_xy(2, 2);
+    LCD_nokia_send_char(formattedTime[0] + CHAR_TO_INT);
+    LCD_nokia_send_char(formattedTime[1] + CHAR_TO_INT);
     LCD_nokia_send_char(':');
-    LCD_nokia_send_char(formattedTime[2] + '0');
-    LCD_nokia_send_char(formattedTime[3] + '0');
+    LCD_nokia_send_char(formattedTime[2] + CHAR_TO_INT);
+    LCD_nokia_send_char(formattedTime[3] + CHAR_TO_INT);
     LCD_nokia_send_char(':');
-    LCD_nokia_send_char(formattedTime[4] + '0');
-    LCD_nokia_send_char(formattedTime[5] + '0');
+    LCD_nokia_send_char(formattedTime[4] + CHAR_TO_INT);
+    LCD_nokia_send_char(formattedTime[5] + CHAR_TO_INT);
+}
+
+void LCD_nokia_show_current(){
+	LCD_nokia_goto_xy(2,3);
+	LCD_nokia_send_string(string_current1);
+	LCD_nokia_goto_xy(2,4);
+	LCD_nokia_send_string(string_current2);
 }
 
 
 void LCD_nokia_show_data(){
-
+	LCD_nokia_clear();
+	LCD_nokia_show_title();
 	LCD_nokia_show_date();
-		LCD_nokia_show_time() ;
-
-
-
+	LCD_nokia_show_time();
+	LCD_nokia_show_current();
 }
 
-
-//actualizar la hora
-void LCD_nokia_update_time() {
-	  LCD_nokia_clear();
-    char formattedString[TIME_STRING_LENGHT];
-
-    // Assuming g_uart_rx_time is an array received from UART
-    // Convert tens and units to characters
-    formattedString[0] = CHAR_TO_INT + g_lcd_rx_time[0]; // Tens of hours
-    formattedString[1] = CHAR_TO_INT + g_lcd_rx_time[1]; // Units of hours
-    formattedString[2] = COLON;
-    formattedString[3] = CHAR_TO_INT + g_lcd_rx_time[2]; // Tens of minutes
-    formattedString[4] = CHAR_TO_INT + g_lcd_rx_time[3]; // Units of minutes
-    formattedString[5] = COLON;
-    formattedString[6] = CHAR_TO_INT + g_lcd_rx_time[4]; // Tens of seconds
-    formattedString[7] = CHAR_TO_INT + g_lcd_rx_time[5]; // Units of seconds
-    formattedString[8] = '\0';
-
-    // Copy the characters one by one to LCD
-    for (int i = 0; i < TIME_STRING_LENGHT; i++) {
-        LCD_nokia_send_char(formattedString[i]);
-    }
+void LCD_nokia_show_welcome()
+{
+	LCD_nokia_clear();
+	LCD_nokia_bitmap(LCD_nokia_images_get_sun_panel());
 }
-

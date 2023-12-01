@@ -1,3 +1,15 @@
+/*
+ * @file 	LCD_nokia.h
+ *
+ * @Authors Diego Delgado
+ * 			Alberto Quintana
+ *
+ * @brief 	This file provides BITMAP of welcome image
+ *
+ *
+ */
+
+
 #ifndef LCD_NOKIA_H_
 #define LCD_NOKIA_H_
 
@@ -23,12 +35,10 @@ void LCD_nokia_show_error();
 void LCD_nokia_clr_welcome_flag();
 uint8_t LCD_nokia_get_welcome_flag();
 void LCD_nokia_show_menu();
-void LCD_nokia_show_sequence();
-void LCD_nokia_show_sequence_playing();
-void LCD_nokia_show_sequence_stopped();
-void LCD_nokia_show_manual();
 void LCD_nokia_show_current();
 void LCD_nokia_show_time();
 void LCD_nokia_show_date();
+void LCD_nokia_update_time();
+void LCD_nokia_show_data();
 
 #endif /* LCD_NOKIA_H_ */

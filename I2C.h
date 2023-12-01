@@ -1,40 +1,29 @@
 /*
  * I2C.h
  *
- *  Created on: Nov 8, 2023
- *      Author: alber
+ * 	Created on: 13/10/2023
+ * 		Author: Diego Delgado, Alberto Quintana
+ *
+ *  @brief
+ *  This is the source file for the I2C device driver.
+ *  It contains the implementation of configuration functions and runtime functions for I2C communication.
+ *
+ *  @details
+ *  The I2C module is configured to communicate with an RTC DS1307 module to read and write time values.
+ *  It provides functions for configuring I2C, writing data, reading data, and obtaining the received time values.
+ *
  */
-
 #ifndef I2C_H_
 #define I2C_H_
 
+
 #include "stdint.h"
+#include "CONFIG.h"
 
-void I2C_init(void);
-
-
-void I2C_rtc_squarewave();
 void I2C_init();
-void I2C_write_rtc_time();
-void I2C_read_rtc_time();
-void I2C_write_rtc_date();
-void I2C_read_rtc_date();
-
-uint8_t* I2C_get_rx_time();
-uint8_t* I2C_get_rx_date();
-uint8_t* I2C_get_rx_hum();
-uint8_t* I2C_get_rx_temp();
+void I2C_write(I2C_Device_t device);
+void I2C_read(I2C_Device_t device);
 uint8_t I2C_get_transfer_success_flag();
-
-void I2C_init_dht();
-void I2C_read_dht();
-
-void I2C_write_data_log(uint8_t log, uint8_t cap);
-void I2C_read_log(uint8_t log, uint8_t cap);
-uint8_t* I2C_get_data_log(uint8_t log);
-uint8_t I2C_get_caps_log(uint8_t log);
-void I2C_write_caps_log(uint8_t log, uint8_t caps);
-
 
 
 #endif /* I2C_H_ */

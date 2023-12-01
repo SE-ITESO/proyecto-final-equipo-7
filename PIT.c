@@ -1,3 +1,18 @@
+/*
+ * @file    PIT.c
+ *
+ * @Authors	Diego Delgado
+ * 			Alberto Quintana
+ *
+ * @brief   This file initializes desired PIT with
+ * corresponding timer periods in microseconds. Once pit timer overflows,
+ * a callback occurs.
+ *
+ *
+ */
+
+
+
 #include "PIT.h"
 #include "fsl_pit.h"
 
@@ -25,13 +40,12 @@ void PIT_init()
 	pit_config_t pitConfig;
 	PIT_GetDefaultConfig(&pitConfig);
 	PIT_Init(PIT, &pitConfig);
-	//PIT_EnableInterrupts(PIT, kPIT_Chnl_0, kPIT_TimerInterruptEnable);
+	PIT_EnableInterrupts(PIT, kPIT_Chnl_0, kPIT_TimerInterruptEnable);
 	PIT_EnableInterrupts(PIT, kPIT_Chnl_1, kPIT_TimerInterruptEnable);
 	//PIT_EnableInterrupts(PIT, kPIT_Chnl_2, kPIT_TimerInterruptEnable);
-	//EnableIRQ(PIT0_IRQn);
+	EnableIRQ(PIT0_IRQn);
 	EnableIRQ(PIT1_IRQn);
 	//EnableIRQ(PIT2_IRQn);
-
 }
 
 void PIT_timer_period(uint32_t channel, uint32_t usec) {
@@ -83,6 +97,18 @@ void PIT_stop(uint32_t channel) {
 }
 
 
+void PIT0_IRQHandler()
+{
+
+
+	if (PIT0_callback)
+	{
+		PIT0_callback(1);
+	}
+
+	PIT_ClearStatusFlags(PIT, kPIT_Chnl_0, kPIT_TimerFlag);
+}
+
 void PIT1_IRQHandler()
 {
 
@@ -93,16 +119,4 @@ void PIT1_IRQHandler()
 	}
 
 	PIT_ClearStatusFlags(PIT, kPIT_Chnl_1, kPIT_TimerFlag);
-}
-
-void PIT2_IRQHandler()
-{
-
-
-	if (PIT2_callback)
-	{
-		PIT2_callback(1);
-	}
-
-	PIT_ClearStatusFlags(PIT, kPIT_Chnl_2, kPIT_TimerFlag);
 }

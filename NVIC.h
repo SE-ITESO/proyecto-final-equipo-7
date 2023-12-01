@@ -1,3 +1,19 @@
+
+/*
+ * *@file NVIC.h
+ *
+ * @Author J. Luis Pizano Escalante
+ * 			used and modified by Diego Delgado, Alberto Quintana
+ *
+ *
+ *	@brief
+ *		This is the source file for the NVIC device driver for Kinetis K64.
+ *		It contains some configuration functions and runtime functions.
+ *		It is implemented using  CMSIS Core functions
+ */
+
+
+
 #ifndef NVIC_H_
 #define NVIC_H_
 

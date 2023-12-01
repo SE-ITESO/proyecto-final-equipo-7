@@ -1,38 +1,32 @@
 /*
- * CONFIG.h
+ * @file    CONFIG.h
  *
- *  Created on: 21 oct. 2023
- *      Author: HP}
+ * @Authors Diego Delgado
+ * 			Alberto Quintana
+ *
+ * @brief   This file defines our macros to prevent magic numbers.
+ *
+ *
  */
 
 #ifndef CONFIG_H_
 #define CONFIG_H_
 
-#include "stdint.h"
+#include "MK64F12.h"
 
 #define COLON_POSITION1				1
 #define COLON_POSITION2 			3
 #define SLASH_POSITION1 			1
 #define SLASH_POSITION2 			3
 #define WDT_WINDOW					3000u
-#define I2C_MASTER_CLK_FREQ         CLOCK_GetFreq(I2C0_CLK_SRC)
-
-
-#define EXAMPLE_DSPI_MASTER_BASEADDR         SPI0
-#define DSPI_MASTER_CLK_FREQ                 CLOCK_GetFreq(DSPI0_CLK_SRC)
-
-
-
-typedef enum{FALSE, TRUE} boolean_t;
-
-
+#define I2C_MASTER_CLK_FREQ         CLOCK_GetFreq(I2C1_CLK_SRC)
+#define UART_CLK_FREQ  				CLOCK_GetFreq(UART0_CLK_SRC)
+#define DSPI_MASTER_CLK_FREQ        CLOCK_GetFreq(DSPI0_CLK_SRC)
+#define WELCOME_TIME				2000000
 typedef enum {
-    GPIOA_name,
-	GPIOB_name,
-	GPIOC_name,
-	GPIOD_name,
-	GPIOE_name
-}GPIO_Name_t;
+	I2C_BAUDRATE = 400000U,
+	UART_BAUDRATE = 115200U
+}BAUDRATE_Value_t;
 
 typedef struct {
     uint8_t flag;
@@ -42,20 +36,12 @@ typedef struct {
     uint8_t caps_count;
 } LOG_Data_t;
 
-
-
 typedef enum {
 	 TRANSFER_SIZE = 8U,
 	 SOUNDS_BUFFER_SIZE	= 20u,
 	 TRANSFER_BAUDRATE 	=	5000000U, /*! Transfer baudrate - 500k */
 	 TRANSFER_BAUDRATE_MEM =	2000000U, /*! Transfer baudrate - 500k */
-
-
 } SPI_config_t;
-
-
-
-
 
 typedef enum {
 	CE_LCD = 0,
@@ -73,6 +59,9 @@ typedef enum {
 
 } LCD_config_t;
 
+
+typedef enum{FALSE, TRUE} boolean_t;
+
 typedef enum {
     PIT_CHANNEL_0,
 	PIT_CHANNEL_1,
@@ -80,20 +69,10 @@ typedef enum {
 }PIT_Channels_t;
 
 typedef enum {
-	rx_BUFFER_SIZE = 2u,
-	CE_MEM = 3,
-	READ_DATA = 0x03u,
-	tx_BUFFER_SIZE = 4u,
-
-
-
-} MEM_config_t;
-
-
-typedef enum {
-	I2C_BAUDRATE = 400000U,
-	UART_BAUDRATE = 115200U
-}BAUDRATE_Value_t;
+    FTM_CHANNEL_0,
+	FTM_CHANNEL_1,
+	FTM_CHANNEL_2
+}FTM_Channels_t;
 
 typedef enum {
 	TENS_MASK = 0xF0,
@@ -101,7 +80,8 @@ typedef enum {
 	LSBYTE_MASK = 0x08,
 	MSBYTE_MASK = 0x80,
 	HOUR_FORMAT_MASK = 0x40,
-	SQUAREWAVE_FREQ_MASK = 0x10
+	SQUAREWAVE_FREQ_MASK = 0x10,
+	CONFIG_MASK = 0xFF,
 }MASK_t;
 
 
@@ -111,7 +91,8 @@ typedef enum {
 	Y_KEY = 0x79,
 	N_KEY = 0x6E,
 	COLON = 58,
-	SLASH = 47,
+	DOT = 46,
+	SLASH,
 	CHAR_TO_INT
 }UART_Keys_t;
 
@@ -120,8 +101,7 @@ typedef enum {
 	SET_DATE,
 	READ_TIME,
 	READ_DATE,
-	READ_TEMP,
-	READ_HUM,
+	READ_CURR,
 }Config_t;
 
 typedef enum {
@@ -144,74 +124,6 @@ typedef enum {
 	READ_LOG_FLAG = 0x40
 } UART_Flags_name_t;
 
-
-
-typedef enum {
-    UART_TENS_HOURS_INDEX,
-    UART_UNITS_HOURS_INDEX,
-    UART_TENS_MINUTES_INDEX,
-    UART_UNITS_MINUTES_INDEX,
-    UART_TENS_SECONDS_INDEX,
-    UART_UNITS_SECONDS_INDEX
-} UART_Time_Index_t;
-
-typedef enum {
-    UART_TENS_DAY_INDEX,
-    UART_UNITS_DAY_INDEX,
-    UART_TENS_MONTH_INDEX,
-    UART_UNITS_MONTH_INDEX,
-    UART_TENS_YEAR_INDEX,
-    UART_UNITS_YEAR_INDEX
-} UART_Date_Index_t;
-
-typedef enum {
-	I2C_SECONDS_INDEX,
-    I2C_MINUTES_INDEX,
-	I2C_HOURS_INDEX
-} I2C_Time_Index_t;
-
-typedef enum {
-	I2C_YEAR_INDEX,
-	I2C_MONTH_INDEX,
-    I2C_DAY_INDEX
-} I2C_Date_Index_t;
-
-
-typedef enum {
-	LOG_FORMAT_LENGHT = 2,
-	TIME_FORMAT_LENGTH = 6,
-	DATE_FORMAT_LENGHT = 6,
-	HUM_STRING_LENGHT,
-	TEMP_STRING_LENGHT,
-	TIME_STRING_LENGHT,
-	DATE_STRING_LENGHT = 11,
-	EEPROM_FORMAT_LENGHT,
-	I2C_DATA_LENGTH = 33,
-	LOG_DATA_STRING_LENGHT = 52
-}UART_lenght_t;
-
-typedef enum {
-	PIN0,
-	PIN1,
-	PIN2,
-	PIN3,
-	PIN4,//////////////////
-	PIN14=14,
-	PIN15,
-	PIN16,
-	PIN17
-}Pin_t;
-
-typedef enum {
-	DHT_RESET = 0xAB,
-	DHT_COMMAND_1 = 0xE1,
-	DHT_COMMAND_2 = 0x08,
-	DHT_COMMAND_3 = 0x00,
-	DHT_STATUS = 0x18u,
-	DHT_COMMAND_4 = 0xAC,
-	DHT_COMMAND_5 = 0x33
-}I2C_Commands_t;
-
 typedef struct {
     uint8_t options : 1;  // Bit 0
     uint8_t config : 1;   // Bit 1
@@ -222,33 +134,114 @@ typedef struct {
     uint8_t read_log : 1;
     uint8_t read_time : 1;
     uint8_t read_date : 1;
-    uint8_t read_hum : 1;
-    uint8_t read_temp : 1;
     uint8_t time : 1;
     uint8_t date : 1;
+    uint8_t read_curr : 1;
 } UART_Flags_t;
 
+typedef struct{
+	uint8_t address;
+	uint16_t subaddress;
+	uint8_t subaddressSize;
+	uint8_t *data;
+	uint8_t dataSize;
+}I2C_Device_t;
+
 typedef enum {
-    UART0_num,
-	UART1_num,
-	UART2_num,
-	UART3_num,
-	UART4_num
-}UART_Num_t;
+    TERMINAL_TENS_HOURS_INDEX,
+    TERMINAL_UNITS_HOURS_INDEX,
+    TERMINAL_TENS_MINUTES_INDEX,
+    TERMINAL_UNITS_MINUTES_INDEX,
+    TERMINAL_TENS_SECONDS_INDEX,
+    TERMINAL_UNITS_SECONDS_INDEX
+} TERMINAL_Time_Index_t;
+
+typedef enum {
+    TERMINAL_TENS_DAY_INDEX,
+    TERMINAL_UNITS_DAY_INDEX,
+    TERMINAL_TENS_MONTH_INDEX,
+    TERMINAL_UNITS_MONTH_INDEX,
+    TERMINAL_TENS_YEAR_INDEX,
+    TERMINAL_UNITS_YEAR_INDEX
+} TERMINAL_Date_Index_t;
+
+typedef enum {
+	RTC_SECONDS_INDEX,
+    RTC_MINUTES_INDEX,
+	RTC_HOURS_INDEX
+} I2C_Time_Index_t;
+
+typedef enum {
+	RTC_YEAR_INDEX,
+	RTC_MONTH_INDEX,
+    RTC_DAY_INDEX
+} I2C_Date_Index_t;
 
 typedef struct{
 	uint8_t flag; /** Flag to indicate that there is new data*/
 	uint16_t mail_box; /** it contains the received data*/
 } uart_mail_box_t;
 
-
+typedef enum {
+	LOG_FORMAT_LENGHT = 2,
+	CURR_FORMAT_LENGHT = 4,
+	TIME_FORMAT_LENGTH = 6,
+	DATE_FORMAT_LENGHT = 6,
+	EEPROM_FORMAT_LENGHT = 8,
+	LOG_DATA_FORMAT_LENGHT = 16,
+	TIME_STRING_LENGHT = 11,
+	DATE_STRING_LENGHT = 11,
+	CURR_STRING_LENGHT = 5,
+	I2C_DATA_LENGTH = 33,
+	LOG_DATA_STRING_LENGHT = 52
+}TERMINAL_lenght_t;
 
 typedef enum {
-	I2C_RTC_ADDRESS = 0x68U,
-	I2C_DHT_ADDRESS = 0x38U,
-	I2C_EEPROM_ADDRESS = 0x50U,
-	HOUR_SUBADDRESS = 0x02U,
-	SQUAREWAVE_SUBADDRESS = 0x07U,
+	PIN0,
+	PIN1,
+	PIN2,
+	PIN3,
+	PIN10=10,
+	PIN11,
+	PIN12,
+	PIN13,
+	PIN14,
+	PIN15,
+	PIN16,
+	PIN17,
+	PIN24=24,
+	PIN25
+}Pin_t;
+
+typedef enum {
+    UART0_num,
+	UART1_num,
+	UART2_num,
+	UART3_num,
+	UART4_num,
+}UART_Num_t;
+
+typedef enum {
+    TERMINAL_1_num = UART0_num,
+	TERMINAL_2_num = UART4_num,
+}TERMINAL_Num_t;
+
+
+#define TERMINAL_1 UART0
+#define	TERMINAL_2 UART4
+
+typedef enum {
+	RTC_ADDRESS = 0x68U,
+	RTC_TIME_SUBADDRESS = 0x00U,
+	RTC_HOUR_SUBADDRESS = 0x02U,
+	RTC_DATE_SUBADDRESS = 0x04U,
+	RTC_SQUAREWAVE_SUBADDRESS = 0x07U,
+	EEPROM_ADDRESS = 0x50U,
+	INA219_ADDRESS = 0x40U,
+	INA219_CURR_SUBADDRESS = 0x04U,
+	INA219_CONFIG_SUBADDRESS = 0x00U,
+	INA219_CALIB_SUBADDRESS = 0x05U,
+
 }I2C_Address_t;
 
 
@@ -261,15 +254,22 @@ typedef enum {
 }LOG_t;
 
 typedef enum {
-	LOG_1_ADDRESS = 0x000,
-	LOG_2_ADDRESS = 0x258U,
-	LOG_3_ADDRESS = 0x4B0U,
-	LOG_4_ADDRESS = 0x708U,
-	LOG_5_ADDRESS = 0x960U,
-	LOG_1_ADD_CAP = 0xBB9U,
-	LOG_2_ADD_CAP = 0xBC9U,
-	LOG_3_ADD_CAP = 0xBD9U,
-	LOG_4_ADD_CAP = 0xBE9U,
-	LOG_5_ADD_CAP = 0xBF9U
+	LOG_1_ADDRESS = 0x001,
+	LOG_2_ADDRESS = 0x191U,
+	LOG_3_ADDRESS = 0x321U,
+	LOG_4_ADDRESS = 0x4B1U,
+	LOG_5_ADDRESS = 0x641U,
+	LOG_1_ADD_CAP = 0x7D1U,
+	LOG_2_ADD_CAP = 0x7D3U,
+	LOG_3_ADD_CAP = 0x7D5U,
+	LOG_4_ADD_CAP = 0x7D7U,
+	LOG_5_ADD_CAP = 0x7D9U
 }LOG_Address_t;
+
+typedef enum{
+	LDR_LU = 12,
+	LDR_LD,
+	LDR_RU = 17,
+	LDR_RD
+}LDR_Names_;
 #endif /* CONFIG_H_ */

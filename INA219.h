@@ -1,21 +1,25 @@
 /*
- * INA219.h
+ * @file 	INA219.c
  *
- *  Created on: Nov 8, 2023
- *      Author: alber
+ * @Authors Diego Delgado
+ * 			Alberto Quintana
+ *
+ * @brief  This file allows us to configure and calibrate our I2C current sensor.
+ * 		   In our case we use a small range since our panel provides a maximum of 160mA.
+ *
+ *
  */
 
 #ifndef INA219_H_
 #define INA219_H_
 
-
 #include "stdint.h"
 
-#define INA219_I2C_ADDRESS 0x40 // Dirección I2C del INA219
-
-
 void INA219_config();
-float READ_Current();
-void INA219_calibration_reg();
+void INA219_calib();
+void INA219_init();
+void INA219_set_device();
+void INA219_read_curr();
+uint8_t* INA219_get_curr();
 
 #endif /* INA219_H_ */

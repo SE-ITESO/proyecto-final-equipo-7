@@ -1,10 +1,13 @@
 /*
- * SPI.h
+ * @file 	SPI.h
  *
- *  Created on: 19 jun. 2021
- *      Author: jlpe
+ * @Authors Diego Delgado
+ * 			Alberto Quintana
+ *
+ * @brief 	This file provides basic SPI configuration with the desired parameters
+ *
+ *
  */
-
 #ifndef SPI_H_
 #define SPI_H_
 
